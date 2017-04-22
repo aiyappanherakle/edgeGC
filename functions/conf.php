@@ -43,7 +43,7 @@ switch ($serverAddr) {
         break;
     default:
     	error_reporting(0);
-    	//error_reporting(E_ALL);
+    	error_reporting(E_ALL);
         define('SUB_FOLDER_ROOT','preProduction2/');
         define('DATABASE', 'gc_combine');
         define('SERVER', 'localhost');
