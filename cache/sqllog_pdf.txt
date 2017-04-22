@@ -1,0 +1,92 @@
+SELECT name, value FROM ilance_configuration /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.ilance.inc.php
+754
+
+SELECT name, value FROM ilance_payment_configuration /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.ilance.inc.php
+850
+
+SELECT groupname FROM ilance_payment_groups WHERE moduletype = 'gateway' /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.ilance.inc.php
+865
+
+SELECT name, value FROM ilance_payment_configuration WHERE configgroup = 'authnet' /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.ilance.inc.php
+888
+
+SELECT configtable, version FROM ilance_modules_group WHERE modulegroup = 'lancekb' LIMIT 1 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.lancekb.inc.php
+40
+
+SELECT name, value FROM ilance_kb_configuration /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.lancekb.inc.php
+49
+
+SELECT value FROM ilance_sessions WHERE sesskey = 'dvpomtf3un9273o2lb298vp7q6' AND expiry > 1490755087 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.sessions.inc.php
+191
+
+SELECT phrase.varname, phrase.text_eng AS text, groups.groupname AS phrasegroupname FROM ilance_language_phrases AS phrase, ilance_language_phrasegroups AS groups, ilance_language AS lang WHERE groups.groupname = phrase.phrasegroup AND lang.languageid = '1' /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.language.inc.php
+131
+
+SELECT name, content, type FROM ilance_templates WHERE styleid = '2' ORDER BY sort ASC /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.styles.inc.php
+61
+
+select * from ilance_catalog_toplevel order by denomination_sort /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.categories_parser.inc.php
+1149
+
+SELECT subject,postsid FROM ilance_kbposts WHERE catid=18 AND approved=1 ORDER BY postsid DESC limit 10 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+
+
+
+SELECT invoiceid FROM ilance_invoices WHERE user_id = '5' AND status = 'unpaid' AND isfvf != 1 AND isif != 1 AND isbuyerfee != 1 AND isenhancementfee != 1 and not combine_project /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+
+
+
+insert into ilance_user_activity (user_id,ipaddress,occurrence,url,userAgent, browsername, version, platform, referer, is_bot) values ( '5','::1','2017-03-29 04:38:07','localhost/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/602.4.8 (KHTML, like Gecko) Version/10.0.3 Safari/602.4.8', '', '10.0.3', 'mac', 'http://localhost/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log', '') /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/global.php
+303
+
+select * from ilance_catalog_toplevel where id='13' order by denomination_sort /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.categories_parser.inc.php
+1149
+
+SELECT count(*) as cnt, p.coin_series_unique_no,c.coin_series_name FROM ilance_projects p, ilance_catalog_second_level c WHERE p.coin_series_denomination_no='13' AND p.coin_series_unique_no = c.coin_series_unique_no AND p.status = 'open' AND date(date_end) = '2017-04-02' group by c.coin_series_unique_no order by c.coin_series_unique_no asc /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.categories_parser.inc.php
+1753
+
+SELECT denomination_unique_no,denomination_long FROM ilance_catalog_toplevel order by denomination_unique_no asc /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/denomination.php
+728
+
+select * from ilance_coin_proof /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/denomination.php
+1015
+
+select UNIX_TIMESTAMP(date_end) - UNIX_TIMESTAMP('2017-03-29 02:26:38') AS mytime,c.date_end,c.project_title,c.currentprice,c.project_id,c.bids,c.buynow,c.filtered_auctiontype,c.buynow_price,c.highlite,c.bold,c.status, a.filename,a.filehash, (select maxamount from ilance_proxybid where user_id=5 and project_id=c.project_id) as pbit ,(select user_id from ilance_project_bids where project_id=c.project_id order by bidamount desc,date_added asc limit 1) as winning_user_id ,(select orderid FROM ilance_buynow_orders WHERE project_id = c.project_id AND buyer_id = '5' limit 1) as buynow_orderid ,(select offer_amt FROM ilance_dailydeal WHERE project_id =c.project_id AND live_date = '2017-03-29' limit 1) as offer_amt ,(select count(attachid) from ilance_attachment where project_id=c.project_id) as picture_count from ilance_projects c left join ilance_attachment a on a.project_id=c.project_id and a.attachtype='itemphoto' where c.status = 'open' AND date(date_end)='2017-04-02' AND c.visible = '1' AND c.coin_series_denomination_no='13' group by c.project_id ORDER BY c.date_end ASC LIMIT 0,50 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/denomination.php
+1086
+
+select c.date_end,c.project_title,c.currentprice,c.project_id,c.buynow,c.highlite,c.bold from ilance_projects c where c.status = 'open' AND date(date_end)='2017-04-02' AND c.visible = '1' AND c.coin_series_denomination_no='13' group by c.project_id ORDER BY c.date_end ASC /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/denomination.php
+1103
+
+SELECT b.user_id FROM ilance_project_bids AS b, ilance_proxybid AS p WHERE b.project_id = '441276' AND b.project_id = p.project_id AND b.user_id = p.user_id ORDER BY b.bidamount DESC,b.bid_id DESC LIMIT 1 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.bid.inc.php
+317
+
+select c.date_end,c.project_title,c.currentprice,c.project_id,c.buynow from ilance_projects c where c.status = 'open' AND date(date_end)='2017-04-02' AND c.visible = '1' AND c.coin_series_denomination_no='13' AND featured = '1' AND c.cid !='0' group by c.project_id ORDER BY c.date_end ASC LIMIT 4 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/denomination.php
+1353
+
+select url_title,url_description,url_keyword from ilance_seo where page='gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log' or seo_url='http://localhost/gc/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log' or seo_url='http://localhost/gc/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log' limit 1 /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/api/class.template.inc.php
+1176
+
+SELECT token FROM ilance_sessions GROUP BY token /*/gc/Denomination/13/Silver-and-Trade-Dollars/2017-04-02?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/functions/core/functions.php
+6939
+
