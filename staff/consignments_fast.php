@@ -26,6 +26,8 @@ $jsinclude = array(
 	'autocomplete',
     'search',
     'tabfx',
+	'jquery',
+	'jquery_custom_ui',
     'modal',
     'yahoo-jar',
 	'flashfix'

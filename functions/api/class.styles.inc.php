@@ -269,6 +269,9 @@ class styles
                 
 				 // #### JQUERY TOOLS ###########################################
                 $headincludebit .= (!empty($jsinclude) AND is_array($jsinclude) AND in_array('jquery', $jsinclude)) ? "jquery," : '';
+				
+				// #### CUSTOM UI FOR DATEPICKER #####################################
+                $headincludebit .= (!empty($jsinclude) AND is_array($jsinclude) AND in_array('jquery_custom_ui', $jsinclude)) ? "jquery_custom_ui," : '';
                
                 // #### HEADER AUTOCOMPLETE SEARCH BAR #########################
                 $headincludebit .= (!empty($jsinclude) AND is_array($jsinclude) AND in_array('autocomplete', $jsinclude)) ? "autocomplete," : '';
