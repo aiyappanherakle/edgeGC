@@ -27,7 +27,16 @@ $phrase['groups'] = array(
 // #### load required javascript ###############################################
 $jsinclude = array(
 	'functions',
-	'ajax'
+	'ajax',
+	'inline',
+	'cron',
+	'autocomplete',
+        'countries',
+        'tabfx',
+        'inline_edit',
+	'jquery',
+        'modal',
+	'flashfix'
 );
 
 // #### setup script location ##################################################
