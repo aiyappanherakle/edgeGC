@@ -23,16 +23,17 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'autocomplete',
-     'tabfx',
-	'flashfix',
+    'tabfx',
 	'jquery',
-     'modal',
+	'jquery_custom_ui',
+	'flashfix',
+    'modal',
 );
 // #### setup script location ##################################################
 define('LOCATION', 'admin');
 // #### require backend ########################################################
 require_once('./../functions/config.php');
-require_once('../ebay/AddItem/AddItem.php');
+//require_once('../ebay/AddItem/AddItem.php');
 // #### setup default breadcrumb ###############################################
 $navcrumb = array($ilpage['dashboard'] => $ilcrumbs[$ilpage['dashboard']]);
 //print_r($_SESSION['ilancedata']['user']);

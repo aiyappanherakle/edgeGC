@@ -9,10 +9,11 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'autocomplete',
-     'tabfx',
+    'tabfx',
 	'flashfix',
 	'jquery',
-     'modal',
+	'jquery_custom_ui',
+    'modal',
 );
 // #### setup script location ##################################################
 define('LOCATION', 'admin');

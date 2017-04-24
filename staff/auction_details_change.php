@@ -25,11 +25,12 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'autocomplete',
-        'search',
-        'tabfx',
-        'jquery',
-        'modal',
-        'yahoo-jar', 
+	'search',
+	'tabfx',
+	'jquery',
+	'jquery_custom_ui',
+	'modal',
+	'yahoo-jar', 
 	'flashfix'
 );
 // #### setup script location ##################################################

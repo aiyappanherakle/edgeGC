@@ -4,7 +4,9 @@ $phrase['groups'] = array(
 );
 // #### load required javascript ###############################################
 $jsinclude = array(
-	'functions'
+	'functions',
+	'jquery',
+	'jquery_custom_ui'
 );
 // #### setup script location ##################################################
 define('LOCATION', 'admin');

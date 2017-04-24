@@ -24,6 +24,8 @@ $jsinclude = array(
 	'cron',
 	'autocomplete',
     'tabfx',
+	'jquery',
+	'jquery_custom_ui',
 	'flashfix'
 );
 // #### setup script location ##################################################

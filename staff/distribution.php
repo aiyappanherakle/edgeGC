@@ -29,8 +29,10 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'autocomplete',
-        'tabfx',
-        'countries',
+	'tabfx',
+	'jquery',
+	'jquery_custom_ui',
+	'countries',
 	'flashfix'
 );
 

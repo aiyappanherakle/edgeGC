@@ -32,8 +32,9 @@ $jsinclude = array(
 	'functions',
 	'ajax',
 	'inline',
-        'tabfx',
-        'jquery',
+	'tabfx',
+	'jquery',
+	'jquery_custom_ui',
 	'flashfix'
 );
 

@@ -25,6 +25,8 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'tabfx',
+	'jquery',
+	'jquery_custom_ui',
 	'flashfix',
 );
 

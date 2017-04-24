@@ -26,7 +26,9 @@ $jsinclude = array(
 	'cron',
 	'autocomplete',
 	'md5',
-        'tabfx',
+	'tabfx',
+	'jquery',
+	'jquery_custom_ui',
 	'flashfix'
 );
 

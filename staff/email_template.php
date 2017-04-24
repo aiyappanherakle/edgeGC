@@ -22,10 +22,11 @@ $phrase['groups'] = array(
 $jsinclude = array(
 	'functions',
 	'ajax',
-	'jquery',
 	'cron',
 	'autocomplete',
-        'tabfx',
+	'tabfx',
+	'jquery',
+	'jquery_custom_ui',
 	'flashfix'
 );
 

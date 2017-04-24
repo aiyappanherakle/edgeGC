@@ -24,8 +24,9 @@ $jsinclude = array(
 	'cron',
 	'autocomplete',
     'tabfx',
-	'flashfix',
-	'jquery'
+	'jquery',
+	'jquery_custom_ui',
+	'flashfix'
 );
 // #### setup script location ##################################################
 define('LOCATION', 'admin');

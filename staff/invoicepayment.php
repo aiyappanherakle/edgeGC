@@ -29,6 +29,8 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'autocomplete',
+	'jquery',
+	'jquery_custom_ui',
 	'flashfix'
 );
 
