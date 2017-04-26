@@ -11,7 +11,7 @@ $jsinclude = array(
 	'inline',
 	'cron',
 	'autocomplete',
-    'tabfx',
+	'tabfx',
 	'jquery',
 	'jquery_custom_ui',
 	'flashfix'
