@@ -64,7 +64,7 @@ switch ($serverAddr) {
 		}
 
         error_reporting(0);
-        define('SUB_FOLDER_ROOT','gc/');
+        define('SUB_FOLDER_ROOT','EdgeGC/');
         define('DATABASE', 'gc_live_20_mar');
         define('SERVER', 'localhost');
         define('SERVER_USERNAME', 'root');

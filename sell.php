@@ -5,7 +5,7 @@
 || # -------------------------------------------------------------------- # ||
 || # Customer License # LuLTJTmo23V1ZvFIM-KH-jOYZjfUFODRG-mPkV-iVWhuOn-b=L
 || # -------------------------------------------------------------------- # ||
-|| # Copyright ©2000–2010 ILance Inc. All Rights Reserved.                # ||
+|| # Copyright Â©2000â€“2010 ILance Inc. All Rights Reserved.                # ||
 || # This file may not be redistributed in whole or significant part.     # ||
 || # ----------------- ILANCE IS NOT FREE SOFTWARE ---------------------- # ||
 || # http://www.ilance.com | http://www.ilance.com/eula	| info@ilance.com # ||
@@ -59,265 +59,92 @@ if (!empty($ilance->GPC['crypted']))
  	$ilance->GPC['page'] = (!isset($ilance->GPC['page']) OR isset($ilance->GPC['page']) AND $ilance->GPC['page'] <= 0) ? 1 : intval($ilance->GPC['page']);		
 	$sql_limit = 'LIMIT ' . (($ilance->GPC['page'] - 1) * $ilconfig['globalfilters_maxrowsdisplaysubscribers']) . ',' . $ilconfig['globalfilters_maxrowsdisplaysubscribers'];
 
+	$date_filter_values['0'] = '2011-01-01';
+	$date_filter_values['1'] = DATEYESTERDAY;
+	$date_filter_values['2'] = SEVENDAYSAGO;
+	$date_filter_values['3'] = THIRTYDAYSAGO;
+	$date_filter_values['4'] = SIXTYDAYSAGO;
+	$date_filter_values['5'] = NINETYDAYSAGO;
+	$date_filter_values['6'] = ONEEIGHTYDAYSAGO;
+	$date_filter_values['7'] = THREESIXTYDAYSAGO;
+	$date_filter_values['8'] = SEVENTWENTYDAYSAGO;
+	$date_filter_values['9'] = THOUSANDEIGHTYDAYSAGO;
+error_reporting(E_ALL);
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'current')
 	{
+		$table_header_images['ASC']="images/default/expand_collapsed.gif";
+		$table_header_images['DESC']="images/default/expand.gif";
+
+		
+
 	$area_title = 'Current Selling';
+	$scriptpage = HTTP_SERVER . $ilpage['search'] . print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
+	$ilance->GPC['action']=isset($ilance->GPC['action'])?$ilance->GPC['action']:0;
+	$ilance->GPC['q']=isset($ilance->GPC['q'])?$ilance->GPC['q']:'';
+	$ilance->GPC['sort']=isset($ilance->GPC['sort'])?$ilance->GPC['sort']:'61';	
+
+	$order_list['11']="ORDER BY p.project_id ASC";
+	$order_list['12']="ORDER BY p.project_id DESC";
+	$order_list['21']="ORDER BY p.project_title ASC";
+	$order_list['22']="ORDER BY p.project_title DESC";
+	$order_list['31']="ORDER BY p.bids ASC";
+	$order_list['32']="ORDER BY p.bids DESC";
+	$order_list['41']="ORDER BY p.price ASC";
+	$order_list['42']="ORDER BY p.price DESC";
+	$order_list['51']="ORDER BY p.currentprice ASC";
+	$order_list['52']="ORDER BY p.currentprice DESC";
+	$order_list['61']="ORDER BY p.date_end ASC";
+	$order_list['62']="ORDER BY p.date_end DESC";
 	
-	//bug1782 tamil for sort starts
-	
-	
-		$scriptpage = HTTP_SERVER . $ilpage['search'] . print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-		$ilance->GPC['action']=isset($ilance->GPC['action'])?$ilance->GPC['action']:0;
-		$ilance->GPC['q']=isset($ilance->GPC['q'])?$ilance->GPC['q']:'';
-		$ilance->GPC['sort']=isset($ilance->GPC['sort'])?$ilance->GPC['sort']:'99';	
-		switch($ilance->GPC['action'])
+	$columns[0]=array("column"=>"project_id","ASC"=>"11","DESC"=>"12","name"=>"Item id","url"=>"action=itemid","title"=>"Sort by itemid");
+	$columns[1]=array("column"=>"project_title","ASC"=>"21","DESC"=>"22","name"=>"Item Title","url"=>"action=itemtitle","title"=>"Sort by itemtitle");
+	$columns[2]=array("column"=>"bids","ASC"=>"31","DESC"=>"32","name"=>"Bids","url"=>"action=bids","title"=>"Sort by bids");
+	$columns[3]=array("column"=>"price","ASC"=>"41","DESC"=>"42","name"=>"Min Bid/Buynow","url"=>"action=minbid/buynow","title"=>"Sort by minbid/buynow");
+	$columns[4]=array("column"=>"currentprice","ASC"=>"51","DESC"=>"52","name"=>"Current Bids","url"=>"action=currentbids","title"=>"Sort by Current Bids");
+	$columns[5]=array("column"=>"date_end","ASC"=>"61","DESC"=>"62","name"=>"Time left","url"=>"action=timeleft","title"=>"Sort by Time Left");
+	$listing1='';
+	$listing2='';
+	foreach($columns as $key=>$column)
+	{
+		$current_order="ASC";
+		$opposite_order="DESC";
+		if(strstr($order_list[$ilance->GPC['sort']],$column['column']))
 		{
-		case 'itemid':
-			if($ilance->GPC['sort']!='12' && $ilance->GPC['sort']!='')
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>';
-				
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}
-			 
-			else
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=11&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			 }  
-			 
-			break;
-			
-		case 'itemtitle':
-	  
-
-			if($ilance->GPC['sort']!='22' && $ilance->GPC['sort']!='')
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}
-			
-			else
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=21&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}  
-
-			break;
-			
-		case 'bids':
-	  
-
-			if($ilance->GPC['sort']!='32' && $ilance->GPC['sort']!='')
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}
-			
-			else
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=31&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}  
-			
-			break;
-				
-		case 'minbid/buynow':
-	  
-
-			if($ilance->GPC['sort']!='42' && $ilance->GPC['sort']!='')
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}
-			
-			else
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=41&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand_collapsed.gif"></a></td> ';
-			  
-			}  
-			
-			break;
-		
-		case 'currentbids':
-	  
-
-			if($ilance->GPC['sort']!='52' && $ilance->GPC['sort']!='')
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by Itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by Itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by Bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by Minbid/Buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by Currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by Time" style="text-decoration:underline">Time left</a></td> ';
-			  
-			}
-			
-			else
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by Itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by Itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=51&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left</a></td> ';
-			   
-			}  
-			
-			break;
-		
-		case 'timeleft':
-	  
-
-			if($ilance->GPC['sort']!='52' && $ilance->GPC['sort']!='')
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left</a><img alt="" src="images/default/expand_collapsed.gif"></td> ';
-			  
-			}
-			
-			else
-			{
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id<img alt="" src="images/default/expand_collapsed.gif"></a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow<img alt="" src="images/default/expand_collapsed.gif"></a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids<img alt="" src="images/default/expand_collapsed.gif"></a></td>'; 
-				$listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=61&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left<img alt="" src="images/default/expand.gif"></a></td> ';
-			   
-			}  
-			
-			break;
-		
-		default:		
-				$listing1 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=12&action=itemid" title="Sort by itemid" style="text-decoration:underline">Item id</a></td> 
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=22&action=itemtitle" title="Sort by itemtitle" style="text-decoration:underline">Item Title</a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=32&action=bids" title="Sort by bids" style="text-decoration:underline">Bids</a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=42&action=minbid/buynow" title="Sort by minbid/buynow" style="text-decoration:underline">Min Bid/Buynow</a></td>
-				<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=52&action=currentbids" title="Sort by currentbids" style="text-decoration:underline">Current Bids</a></td>'; 
-				 $listing2 =  '<td><a href="'.$ilpage['sell'] . '?cmd=current&sort=62&action=timeleft" title="Sort by itemid" style="text-decoration:underline">Time left</a></td> '; 
-		
+			$current_order=strstr($order_list[$ilance->GPC['sort']], 'DESC')?"DESC":"ASC";
+			$opposite_order=strstr($order_list[$ilance->GPC['sort']], 'DESC')?"ASC":"DESC";
+		}
+		$opposite_order=$column[$opposite_order];
+		if($key!=5)
+		{
+			$listing1.='<td><a href="'.$ilpage['sell'] . '?cmd=current&sort='.$opposite_order.'&'.$column['url'].'" title="'.$column['title'].'" style="text-decoration:underline">'.$column['name'].'<img alt="" src="'.$table_header_images[$current_order].'"></a></td> ';
+		}else
+		{
+			$listing2.='<td><a href="'.$ilpage['sell'] . '?cmd=current&sort='.$opposite_order.'&'.$column['url'].'" title="'.$column['title'].'" style="text-decoration:underline">'.$column['name'].'<img alt="" src="'.$table_header_images[$current_order].'"></a></td> ';
 		}
 		
-if ($ilance->GPC['sort']=='11') 
-{
-$orderby1 ="ORDER BY project_id ASC";
-}
-else if ($ilance->GPC['sort']=='12') 
-{
-$orderby1 ="ORDER BY project_id DESC";
-}
-else if ($ilance->GPC['sort']=='21') 
-{
-$orderby1 ="ORDER BY project_title ASC";
-}
-else if ($ilance->GPC['sort']=='22') 
-{
-$orderby1 ="ORDER BY project_title DESC";
-}
-else if ($ilance->GPC['sort']=='31') 
-{
-$orderby1 ="ORDER BY bids ASC";
-}
-else if ($ilance->GPC['sort']=='32') 
-{
-$orderby1 ="ORDER BY bids DESC";
-}
-else if ($ilance->GPC['sort']=='41') 
-{
-$orderby1 ="ORDER BY price ASC";
-}
-else if ($ilance->GPC['sort']=='42') 
-{
-$orderby1 ="ORDER BY price DESC";
-}
-else if ($ilance->GPC['sort']=='51') 
-{
-$orderby1 ="ORDER BY currentprice ASC";
-}
-else if ($ilance->GPC['sort']=='52') 
-{
-$orderby1 ="ORDER BY currentprice DESC";
-}
-else if ($ilance->GPC['sort']=='61') 
-{
-$orderby1 ="ORDER BY date_end ASC";
-}
-else if ($ilance->GPC['sort']=='62') 
-{
-$orderby1 ="ORDER BY date_end DESC";
-}
-else if ($ilance->GPC['sort']=='99') 
-{
-$orderby1 ="ORDER BY date_end ASC";
-}
-	
+	}
+
 	//bug1782 tamil for sort ends
-	 $SQL="
-                 SELECT p.*,GREATEST(p.buynow_price,p.startprice) as price,a.filehash,
- UNIX_TIMESTAMP(p.date_end) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS mytime, UNIX_TIMESTAMP(p.date_starts) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS starttime,count(w.watching_project_id) as watchlist_count
-                FROM " . DB_PREFIX . "projects p
-				left join " . DB_PREFIX . "attachment a on a.project_id=p.project_id and a.attachtype='itemphoto' and a.visible='1'
-				left join " . DB_PREFIX . "watchlist w on p.project_id = w.watching_project_id
-				WHERE  	p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND     p.visible ='1'
-				AND  	p.project_state = 'product'
-				AND    	p.status = 'open'
-				group by p.project_id
-				$orderby1
-                ";
+	$SQL="  SELECT p.*,GREATEST(p.buynow_price,p.startprice) as price,a.filehash,
+			UNIX_TIMESTAMP(p.date_end) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS mytime, 
+			UNIX_TIMESTAMP(p.date_starts) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS starttime,
+			count(w.watching_project_id) as watchlist_count
+			FROM " . DB_PREFIX . "projects p
+			left join " . DB_PREFIX . "attachment a on a.project_id=p.project_id and a.attachtype='itemphoto' and a.visible='1'
+			left join " . DB_PREFIX . "watchlist w on p.project_id = w.watching_project_id
+			WHERE  	p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
+			AND     p.visible ='1'
+			AND  	p.project_state = 'product'
+			AND    	p.status = 'open'
+			group by p.project_id ".$order_list[$ilance->GPC['sort']]." ";
     $scriptpage = HTTP_SERVER .'Sell/Current'. print_hidden_fields(true, array('do','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-	$sql_gcsell1 = $ilance->db->query($SQL);
+	$sql_gcsell1 = $ilance->db->query($SQL, 0, null, __FILE__, __LINE__);
 	$number = $ilance->db->num_rows($sql_gcsell1);	
 
 	$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
 	$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);	
 	
-	$sql_gcsell = $ilance->db->query($SQL.$sql_limit);           
+	$sql_gcsell = $ilance->db->query($SQL.$sql_limit, 0, null, __FILE__, __LINE__);           
 				
 			if ($ilance->db->num_rows($sql_gcsell) > 0)
 			{
@@ -357,89 +184,7 @@ $orderby1 ="ORDER BY date_end ASC";
 					   {
 					    $mess = '<font color="blue"> Listed for<br>Buy Now </font>';
 					   }
-					   
-					 if ($res_gc_active['timeleft'] > DATETIME24H)
-						{
-							$dif = $res_gcsell['starttime'];
-							$ndays = floor($dif / 86400);
-							$dif -= $ndays * 86400;
-							$nhours = floor($dif / 3600);
-							$dif -= $nhours * 3600;
-							$nminutes = floor($dif / 60);
-							$dif -= $nminutes * 60;
-							$nseconds = $dif;
-							$sign = '+';
-							if ($res_gcsell['starttime'] < 0)
-							{
-								//$row['starttime'] = - $row['starttime'];
-								$sign = '-';
-								//$row['currentbid'] = '-';
-							}
-							if ($sign != '-')
-							{
-								if ($ndays != '0')
-								{
-									$project_time_left = $ndays . $phrase['_d_shortform'] . ', ';	
-									$project_time_left .= $nhours . $phrase['_h_shortform'] . '+';
-								}
-								else if ($nhours != '0')
-								{
-									$project_time_left = $nhours . $phrase['_h_shortform'] . ', ';
-									$project_time_left .= $nminutes . $phrase['_m_shortform'] . '+';
-								}
-								else
-								{
-									$project_time_left = $nminutes . $phrase['_m_shortform'] . ', ';
-									$project_time_left .= $nseconds . $phrase['_s_shortform'] . '+';	
-								}
-							}
-							//$row['timetostart'] = $project_time_left;
-							//$row['timeleft'] = $phrase['_starts'] . ': ' . $row['timetostart'];
-						}
-						else
-						{
-							$dif = $res_gcsell['mytime'];
-							$ndays = floor($dif / 86400);
-							$dif -= $ndays * 86400;
-							$nhours = floor($dif / 3600);
-							$dif -= $nhours * 3600;
-							$nminutes = floor($dif / 60);
-							$dif -= $nminutes * 60;
-							$nseconds = $dif;
-							$sign = '+';
-							if ($res_gcsell['mytime'] < 0)
-							{
-								//$row['mytime'] = - $rows['mytime'];
-								$sign = '-';
-							}
-							
-							if ($sign == '-')
-							{
-								$project_time_left = $phrase['_ended'];
-								//$row['currentbid'] = '-';
-							}
-							else
-							{
-								if ($ndays != '0')
-								{
-									$project_time_left = $ndays . $phrase['_d_shortform'] . ', ';	
-									$project_time_left .= $nhours . $phrase['_h_shortform'] . '+';
-								}
-								else if ($nhours != '0')
-								{
-									$project_time_left = $nhours . $phrase['_h_shortform'] . ', ';
-									$project_time_left .= $nminutes . $phrase['_m_shortform'] . '+';
-								}
-								else
-								{
-									$project_time_left = $nminutes . $phrase['_m_shortform'] . ', ';
-									$project_time_left .= $nseconds . $phrase['_s_shortform'] . '+';	
-								}
-							}
-                                                        
-							$res_gc_sell['timelef'] = $project_time_left;
-						}
-					 
+					    $res_gc_sell['timelef']=auction_time_left_new($res_gcsell,true);
 						$views_trackers  = $res_gcsell['views'].' / '.($res_gcsell['users_tracked']+$res_gcsell['watchlist_count']);
 					   
 					  // End here murugan
@@ -477,361 +222,101 @@ $orderby1 ="ORDER BY date_end ASC";
 				//// items sold
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'sold')
 	{
-	$area_title = 'Sold Items';
-	if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'soldsearch')
-	{
+		error_reporting(E_ALL);
+		$area_title = 'Sold Items';
 		$scriptpage = HTTP_SERVER .'Sell/Sold'. print_hidden_fields(true, array('do','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
 		$endDate = DATETODAY;
-		if($ilance->GPC['searchsell'] == 1)
-		{
-			 $value = DATEYESTERDAY;
-		}
-		else if($ilance->GPC['searchsell'] == 2)
-		{
-			 $value = SEVENDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 3)
-		{
-		 $value = THIRTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 4)
-		{
-		 $value = SIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 5)
-		{
-			 $value = NINETYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 6)
-		{
-			 $value = ONEEIGHTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 7)
-		{
-			 $value = THREESIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 8)
-		{
-			 $value = SEVENTWENTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 9)
-		{
-			 $value = THOUSANDEIGHTYDAYSAGO;
-		}
-		else
-		{
-			$value = '2011-01-01';
-		}
+		$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:2;
+		
+ 		
+ 		$gcsold1 = " SELECT p.project_id FROM " . DB_PREFIX . "projects p
+ 				WHERE  	p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
+				AND     p.visible ='1'
+				AND  	p.project_state = 'product'
+				AND    	p.status = 'expired'	
+				AND    	p.haswinner = '1'
+				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."') 
+				ORDER BY p.id ASC  ";  
 
-	   	$gcsold = " SELECT * FROM " . DB_PREFIX . "projects   
-                WHERE  	user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND     visible ='1'
-				AND  	project_state = 'product'
-				AND    	status = 'expired'	
-				AND    	(haswinner = '1')
-				AND   (date(date_end) <= '".$endDate."' AND date(date_end) >= '".$value."')
-				GROUP BY project_id
-				ORDER BY id ASC  ";  
+ 		$gcsold = " SELECT p.project_id,p.project_title,p.currentprice,p.startprice,
+ 				p.bids,p.date_end,i.status,i.duedate,i.paiddate,i.createdate,i.invoiceid,
+ 				a.filehash,a.filename,b.bidamount FROM " . DB_PREFIX . "projects p
+ 				left join " . DB_PREFIX . "attachment a on a.project_id=p.project_id and a.attachtype='itemphoto'
+ 				left join " . DB_PREFIX . "project_bids b on b.project_id=p.project_id and b.bidstatus = 'awarded'
+ 				left join " . DB_PREFIX . "invoices i on i.projectid=p.project_id and i.p2b_user_id='".$_SESSION['ilancedata']['user']['userid']."'
+                WHERE  	p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
+				AND     p.visible ='1'
+				AND  	p.project_state = 'product'
+				AND    	p.status = 'expired'	
+				AND    	p.haswinner = '1'
+				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."') 
+				ORDER BY p.id ASC  ";  
 
-	   		$sql_gcsold1 = $ilance->db->query($gcsold);
-			$number = $ilance->db->num_rows($sql_gcsold1);	
+   		$sql_gcsold1 = $ilance->db->query($gcsold1, 0, null, __FILE__, __LINE__);
+		$number = $ilance->db->num_rows($sql_gcsold1);	
 
-	
-			$sql_gcsold = $ilance->db->query($gcsold.$sql_limit);
-		}
-		else
-		{
-			$scriptpage = HTTP_SERVER .'Sell/Sold?'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-			$gcsold = " SELECT * FROM " . DB_PREFIX . "projects   
-                WHERE  	user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND     visible ='1'
-				AND  	project_state = 'product'
-				AND    	status = 'expired'	
-				AND    	(haswinner = '1')	
-				AND   (date(date_end) <= '".DATETODAY."' AND date(date_end) >= '".SEVENDAYSAGO."')			
-				GROUP BY project_id
-				ORDER BY id ASC ";
 
-			$sql_gcsold1 = $ilance->db->query($gcsold);
-			$number = $ilance->db->num_rows($sql_gcsold1);	
+		$sql_gcsold = $ilance->db->query($gcsold.$sql_limit, 0, null, __FILE__, __LINE__);
 
-			$sql_gcsold = $ilance->db->query($gcsold.$sql_limit);
-				 
-		}
-		if(isset($ilance->GPC['searchsell']))
-								{
-								  if($ilance->GPC['searchsell'] == 1)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1" selected="selected">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 2)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 3)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3" selected="selected">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 4)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" selected="selected">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 5)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" >Last 60 days</option>
-								<option value="5" selected="selected">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 6)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6" selected="selected">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								else if($ilance->GPC['searchsell'] == 7)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7" selected="selected">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 8)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8" selected="selected">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 9)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9" selected="selected">Last 1080 days</option>
-								</select>';
-								  }
-								  else
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0" selected="selected">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>								
-								</select>';
-								  }
-								  
-								}
-								else
-								{
-								$drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								}
+		
+		$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
+		
 
 		$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
 		$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);	
 								
-				if ($ilance->db->num_rows($sql_gcsold) > 0)
-				{
-				while ($res_gcsold = $ilance->db->fetch_array($sql_gcsold))
-					{
-					
-					$sql_atty = $ilance->db->query("
-                       SELECT * FROM
-                       " . DB_PREFIX . "attachment
-                       WHERE visible='1'
-                                               AND project_id = '".$res_gcsold['project_id']."'
-                                               AND attachtype='itemphoto'
-                                               
-                       ");
-                $fetch_new=$ilance->db->fetch_array($sql_atty);
-                               
-					   if($ilance->db->num_rows($sql_atty) == 1)
-					   {
-							   $uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $fetch_new['filehash'] .'&w=170&h=105';
-							   
-							   	//nov 28 for seo		   
-							   
-							   
+		if ($ilance->db->num_rows($sql_gcsold) > 0)
+		{
+		while ($res_gcsold = $ilance->db->fetch_array($sql_gcsold))
+			{
+				if($res_gcsold['filehash'] != NULL)
+				$uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $res_gcsold['filehash'] .'&w=170&h=105';
+				else
+				$uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
+
 				if ($ilconfig['globalauctionsettings_seourls'])
 				{
-						$item_path=HTTP_SERVER.'Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'';
-						$htm ='<a href="Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-	            }
-				 else
-					    $htm ='<a href="merch.php?id='.$res_gcsold['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>'; 
-							   
-							   //$htm ='<a href="'. $ilpage['merch'] .'?id='.$res_gcsell['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					   }
-					   if($ilance->db->num_rows($sql_atty) == 0)
-			   
-					   {
-						   $uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
-							   
-						   $htm ='<img src="' . $uselistr . '">';
-					   }
-						$sql_inv = $ilance->db->query("SELECT * FROM " . DB_PREFIX . "invoices
-                                               WHERE projectid = '".$res_gcsold['project_id']."'
-                                               AND p2b_user_id ='".$_SESSION['ilancedata']['user']['userid']."'");
-					  
-					   if($ilance->db->num_rows($sql_inv) > 0)
-					   {
-					    	$fetch_inv=$ilance->db->fetch_array($sql_inv);
-							// murugan changes on feb 08 
-							/*$res_gc_sold['invoice'] = '<a href="invoicepayment.php?cmd=view&txn='.$fetch_inv['transactionid'].'">'.$fetch_inv['invoiceid'].'</a>';*/
-							$explo = explode(' ',$fetch_inv['createdate']);
-					    	// murugan changes on feb 08 
-							//$res_gc_sold['invoice'] = '<a href="invoicepayment.php?cmd=view&txn='.$fetch_inv['transactionid'].'">'.$fetch_inv['invoiceid'].'</a>';
-							$res_gc_sold['invoice'] = '<a href="consignor_statement.php?date='.$explo[0].'">'.$fetch_inv['invoiceid'].'</a>';
-							
-							if($fetch_inv['status'] == 'paid')
-							{
-								$invdate = '<br>'.date('m/d/Y',strtotime($fetch_inv['paiddate']));
-								$res_gc_sold['status'] = 'Paid on'.$invdate;
-							}
-							else
-							{
-							  $invdate = '<br>'.date('m/d/Y',strtotime($fetch_inv['duedate']));
-							  $res_gc_sold['status'] = 'To Be Paid on '.$invdate;
-							}
-					   }
-					   else
-					   {
-					    	$res_gc_sold['invoice'] = 'Offline Payment';
-							$res_gc_sold['status'] = 'Ended';
-					   }
-					   $selbid = $ilance->db->query("SELECT bidamount FROM " . DB_PREFIX . "project_bids
-					   								WHERE project_id = '".$res_gcsold['project_id']."'
-													AND bidstatus = 'awarded'");
-						if($ilance->db->num_rows($selbid) > 0)
-						{
-							$resbid = $ilance->db->fetch_array($selbid);
-							$res_gc_sold['current_bid'] = $resbid['bidamount'];
-						}
-						else
-						{
-							$res_gc_sold['current_bid'] = $res_gcsold['currentprice'];
-						}
-						
-					$res_gc_sold['item_path']=$item_path;
-					$res_gc_sold['thumbnail'] = $htm;
-					$res_gc_sold['item_id'] = $res_gcsold['project_id'];
-					//$res_gc_sold['item_title'] = '<a href="' . $ilpage['selling'] . '?cmd=product-management&amp;state=product&amp;id='.$res_gcsold['project_id'].'">'.$res_gcsold['project_title'] .'</a>';
-					$res_gc_sold['item_title'] = $res_gcsold['project_title'];
-					$res_gc_sold['minbid_buynow'] = $res_gcsold['startprice'];
-					$res_gc_sold['bids'] = $res_gcsold['bids'];
-					$res_gc_sold['date_end'] = date('m-d-Y',strtotime($res_gcsold['date_end']));
-					//$res_gc_sold['status'] = 'Ended';					
-					$res_gc_sold['description'] = 'Item Sold';
-					//$res_gc_sold['current_bid'] = $resbid['bidamount'];
-					$res_gc_itemsold[] = $res_gc_sold;
-					}
+					$item_path=HTTP_SERVER.'Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'';
+				}else
+				{
+					$item_path='merch.php?id='.$res_gcsold['project_id'];
+					
 				}
-				else
-				{				
-				$res_gc_itemsold['mm'] = 'Nofound';
+				$htm ='<a href="'.$item_path.'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>'; 
+			if($res_gcsold['invoiceid']>0)
+			{
+				$explo = explode(' ',$res_gcsold['createdate']);
+				$res_gc_sold['invoice'] = '<a href="consignor_statement.php?date='.$explo[0].'">'.$res_gcsold['invoiceid'].'</a>';
+				if($res_gcsold['status']=="paid")
+				{
+					$res_gc_sold['status'] = 'Paid on'.'<br>'.date('m/d/Y',strtotime($res_gcsold['paiddate']));
+				}else
+				{
+					$res_gc_sold['status'] = 'To Be Paid on '.'<br>'.date('m/d/Y',strtotime($res_gcsold['duedate']));
 				}
-				$pprint_array = array('prevnext','drop_value','daylist','monthlist','yearlist','bidamount','project_title','buyingreminders','sellingreminders','scheduledcount','itemsworth','expertsrevenue','expertsearch','jobcount','expertcount','itemcount','feedbackactivity','messagesactivity','recentlyviewedflash','tagcloud','main_servicecats_img','main_productcats_img','main_servicecats','main_productcats','lanceads_folder','two_column_category_buyers','two_column_service_categories','two_column_product_categories','remote_addr','rid','default_exchange_rate','login_include','headinclude','onload','area_title','page_title','site_name','https_server','http_server','lanceads_header','lanceads_footer');
+			}else{
+				$res_gc_sold['invoice'] = 'Offline Payment';
+				$res_gc_sold['status'] = 'Ended';
+			}
+				
+
+			$res_gc_sold['current_bid'] = (isset($res_gcsold['bidamount']))?$res_gcsold['bidamount']:$res_gcsold['currentprice'];
+			$res_gc_sold['item_path']=$item_path;
+			$res_gc_sold['thumbnail'] = $htm;
+			$res_gc_sold['item_id'] = $res_gcsold['project_id'];
+			$res_gc_sold['item_title'] = $res_gcsold['project_title'];
+			$res_gc_sold['minbid_buynow'] = $res_gcsold['startprice'];
+			$res_gc_sold['bids'] = $res_gcsold['bids'];
+			$res_gc_sold['date_end'] = date('m-d-Y',strtotime($res_gcsold['date_end']));
+			$res_gc_sold['description'] = 'Item Sold';
+			$res_gc_itemsold[] = $res_gc_sold;
+			}
+		}
+		else
+		{				
+		$res_gc_itemsold['mm'] = 'Nofound';
+		}
+	$pprint_array = array('prevnext','drop_value','daylist','monthlist','yearlist','bidamount','project_title','buyingreminders','sellingreminders','scheduledcount','itemsworth','expertsrevenue','expertsearch','jobcount','expertcount','itemcount','feedbackactivity','messagesactivity','recentlyviewedflash','tagcloud','main_servicecats_img','main_productcats_img','main_servicecats','main_productcats','lanceads_folder','two_column_category_buyers','two_column_service_categories','two_column_product_categories','remote_addr','rid','default_exchange_rate','login_include','headinclude','onload','area_title','page_title','site_name','https_server','http_server','lanceads_header','lanceads_footer');
 	$ilance->template->fetch('main', 'sell_sold.html');
 	$ilance->template->parse_hash('main', array('ilpage' => $ilpage));
 	$ilance->template->parse_loop('main', array('res_gc_itempending','res_gc_itemsold','res_gcselling','res_gcsolding','res_gc_returning'));
@@ -847,354 +332,75 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'sold')
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowsold')
 	{
 	$area_title = 'Buynow Item Sold';
-	if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'soldsearch')
-	{
-		$scriptpage = HTTP_SERVER .'Sell/Buynowsold'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);      
-		$endDate = DATETODAY;
-		if($ilance->GPC['searchsell'] == 1)
-		{
-			 $value = DATEYESTERDAY;
-		}
-		else if($ilance->GPC['searchsell'] == 2)
-		{
-			 $value = SEVENDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 3)
-		{
-		 $value = THIRTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 4)
-		{
-		 $value = SIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 5)
-		{
-			 $value = NINETYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 6)
-		{
-			 $value = ONEEIGHTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 7)
-		{
-			 $value = THREESIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 8)
-		{
-			 $value = SEVENTWENTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 9)
-		{
-			 $value = THOUSANDEIGHTYDAYSAGO;
-		}
-		else
-		{
-			$value = '2011-01-01';
-		}
-
-	   		$buynw= " SELECT * FROM " . DB_PREFIX . "buynow_orders 
-                WHERE  	owner_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND   (date(orderdate) <= '".$endDate."' AND date(orderdate) >= '".$value."')  ";  
+	$scriptpage = HTTP_SERVER .'Sell/Buynowsold'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);      
+	$endDate = DATETODAY;
+	
+		$buynw= " SELECT p.project_id,p.project_title,p.date_end,p.status,a.filehash,i.invoiceid,i.duedate,i.paiddate,i.createdate,i.amount,p.bids
+		,o.orderdate,o.qty FROM " . DB_PREFIX . "buynow_orders o
+				left join " . DB_PREFIX . "projects p on p.project_id=o.project_id
+				left join " . DB_PREFIX . "attachment a on a.project_id=p.project_id and a.attachtype='itemphoto'
+				left join " . DB_PREFIX . "invoices i on i.projectid=o.project_id and i.p2b_user_id=o.owner_id and o.orderid=i.buynowid
+                WHERE  p.project_id>0 and	o.owner_id = '".$_SESSION['ilancedata']['user']['userid']."'   
+				AND   (date(o.orderdate) <= '".$endDate."' 
+				AND date(o.orderdate) >= '".$date_filter_values[$ilance->GPC['searchsell']]."') 
+				group by o.project_id order by p.project_id desc
+				 ";  
 	   		
-	   		$sql_buynw1 = $ilance->db->query($buynw);
+	   		$sql_buynw1 = $ilance->db->query($buynw, 0, null, __FILE__, __LINE__);
 			$number = $ilance->db->num_rows($sql_buynw1);	
+	
+			$sql_buynw = $ilance->db->query($buynw.$sql_limit, 0, null, __FILE__, __LINE__);
 
-	
-			$sql_buynw = $ilance->db->query($buynw.$sql_limit);
-		}
-		else  
-		{
-			$scriptpage = HTTP_SERVER .'Sell/Buynowsold?'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-			$buynw= " SELECT * FROM " . DB_PREFIX . "buynow_orders 
-                WHERE  	owner_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND   (date(orderdate) <= '".DATETODAY."' AND date(orderdate) >= '".SEVENDAYSAGO."') "; 
-			$sql_buynw1 = $ilance->db->query($buynw);
-			$number = $ilance->db->num_rows($sql_buynw1);	
-	
-			$sql_buynw = $ilance->db->query($buynw.$sql_limit);
-		
-		}
-		if(isset($ilance->GPC['searchsell']))
-								{
-								  if($ilance->GPC['searchsell'] == 1)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1" selected="selected">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 2)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 3)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3" selected="selected">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 4)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" selected="selected">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 5)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" >Last 60 days</option>
-								<option value="5" selected="selected">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 6)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6" selected="selected">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 7)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7" selected="selected">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 8)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8" selected="selected">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 9)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9" selected="selected">Last 1080 days</option>
-								</select>';
-								  }
-								  else
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0" selected="selected">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								 
-								 }							
-								  
-								}
-								else
-								{
-								$drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								}
-	$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
-	$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);		
+
+			$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+			$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
+			
+			$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
+			$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);		
 				if ($ilance->db->num_rows($sql_buynw) > 0)
 				{
 				while ($res_gcsold = $ilance->db->fetch_array($sql_buynw))
 					{
-			
-					
-					$sql_atty = $ilance->db->query("
-                       SELECT * FROM
-                       " . DB_PREFIX . "attachment
-                       WHERE visible='1'
-                                               AND project_id = '".$res_gcsold['project_id']."'
-                                               AND attachtype='itemphoto'
-                                               
-                       ");
-                $fetch_new=$ilance->db->fetch_array($sql_atty);
-				
-				 
-					   if($ilance->db->num_rows($sql_atty) == 1)
-					   {
-							   $uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $fetch_new['filehash'] .'&w=170&h=105';
-							   //nov 28 for seo		   
-				if ($ilconfig['globalauctionsettings_seourls'])
-				{
-						
-						$htm ='<a href="Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-				}
-	            else
-					    $htm ='<a href="merch.php?id='.$res_gcsold['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-							   
-							   //$htm ='<a href="'. $ilpage['merch'] .'?id='.$res_gcsell['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					   }
-					   if($ilance->db->num_rows($sql_atty) == 0)
-			   
-					   {
-					   
-					  // fetch_auction('p',pid)
-						   $uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
-							   
-						   $htm ='<img src="' . $uselistr . '">';
-					   }
+
+					$uselistr = (strlen($res_gcsold['filehash'])>0)?HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $res_gcsold['filehash'] .'&w=170&h=105':$ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
+					$url=$ilconfig['globalauctionsettings_seourls']?'Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']):'merch.php?id='.$res_gcsold['project_id'];
+					$htm ='<a href="'.$url.'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
 					  
-						$sql_inv = $ilance->db->query("SELECT * FROM " . DB_PREFIX . "invoices
-                                               WHERE projectid = '".$res_gcsold['project_id']."'
-                                               AND p2b_user_id ='".$_SESSION['ilancedata']['user']['userid']."'											  
-											   AND buynowid = '".$res_gcsold['orderid']."' ");
-					  
-					   
-					   $selbid = $ilance->db->query("SELECT bidamount FROM " . DB_PREFIX . "project_bids
-					   								WHERE project_id = '".$res_gcsold['project_id']."'
-													AND bidstatus = 'awarded'");
-						if($ilance->db->num_rows($selbid) > 0)
+					if($res_gcsold['invoiceid']> 0)
+				   	{
+				   		$explo = explode(' ',$res_gcsold['date_end']);
+				    	$item_path=HTTP_SERVER.'Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'';
+						$res_gc_sold['invoice'] = '<a href="consignor_statement.php?date='.$explo[0].'">'.$res_gcsold['invoiceid'].'</a>';
+						if($res_gcsold['status'] == 'paid')
 						{
-							$resbid = $ilance->db->fetch_array($selbid);
-							$res_gc_sold['current_bid'] = $resbid['bidamount'];
+							$invdate = date('m/d',strtotime($res_gcsold['paiddate']));
+							$res_gc_sold['status'] = 'Paid on'.$invdate;
 						}
 						else
 						{
-							$res_gc_sold['current_bid'] = $res_gcsold['currentprice'];
+						  $invdate = date('m/d',strtotime($res_gcsold['duedate']));
+						  $res_gc_sold['status'] = 'To Be Paid on '.$invdate;
 						}
-						
-			$sql_gcsold = $ilance->db->query("
-                 SELECT *
-                FROM " . DB_PREFIX . "projects   
-                WHERE  	user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				 AND project_id = '".$res_gcsold['project_id']."'
-				 GROUP BY project_id			
-				ORDER BY id ASC
-                "); 
-				$res_gcsold1=$ilance->db->fetch_array($sql_gcsold);
-				//$explo = explode(' ',$res_gcsold1['date_end']);
-				
-						if($ilance->db->num_rows($sql_inv) > 0)
-					   {
-					   		$explo = explode(' ',$res_gcsold1['date_end']);
-					    	$fetch_inv=$ilance->db->fetch_array($sql_inv);
-							$item_path=HTTP_SERVER.'Coin/'.$res_gcsold1['project_id'].'/'.construct_seo_url_name($res_gcsold1['project_title']).'';
-							// murugan changes on feb 08 
-							//$res_gc_sold['invoice'] = '<a href="invoicepayment.php?cmd=view&txn='.$fetch_inv['transactionid'].'">'.$fetch_inv['invoiceid'].'</a>';
-							$res_gc_sold['invoice'] = '<a href="consignor_statement.php?date='.$explo[0].'">'.$fetch_inv['invoiceid'].'</a>';
-							if($fetch_inv['status'] == 'paid')
-							{
-								$invdate = date('m/d',strtotime($fetch_inv['paiddate']));
-								$res_gc_sold['status'] = 'Paid on'.$invdate;
-							}
-							else
-							{
-							  $invdate = date('m/d',strtotime($fetch_inv['duedate']));
-							  $res_gc_sold['status'] = 'To Be Paid on '.$invdate;
-							}
-					   }
-					   else
-					   {
-					    	$res_gc_sold['invoice'] = 'Offline Payment';
-							$res_gc_sold['status'] = 'Ended';
-					   }
-				//$res_gcsold1=$ilance->db->fetch_array($sql_gcsold); 
-				if($res_gcsold1['status']=='closed'||$res_gcsold1['status']=='expired')
-				{
-				$res_gc_sold['status'] ='Ended';	
-				}
-				else
-				{
-				$res_gc_sold['status'] ='Open';	
-				}
-					$res_gc_sold['item_path'] = $item_path;
+				   	}
+				   	else
+				   	{
+				    	$res_gc_sold['invoice'] = 'Offline Payment';
+						$res_gc_sold['status'] = 'Ended';
+				   	}
+					//$res_gcsold1=$ilance->db->fetch_array($sql_gcsold); 
+					if($res_gcsold['status']=='closed'||$res_gcsold['status']=='expired')
+					{
+					$res_gc_sold['status'] ='Ended';	
+					}
+					else
+					{
+					$res_gc_sold['status'] ='Open';	
+					}
+					$res_gc_sold['item_path'] = $url;
 					$res_gc_sold['thumbnail'] = $htm;
 					$res_gc_sold['item_id'] = $res_gcsold['project_id'];
 					//$res_gc_sold['item_title'] = '<a href="' . $ilpage['selling'] . '?cmd=product-management&amp;state=product&amp;id='.$res_gcsold['project_id'].'">'.$res_gcsold['project_title'] .'</a>';
-					$res_gc_sold['item_title'] = $res_gcsold1['project_title'];
+					$res_gc_sold['item_title'] = $res_gcsold['project_title'];
 					$res_gc_sold['minbid_buynow'] = $res_gcsold['amount'];
 					$res_gc_sold['bids'] = $res_gcsold['bids'];
 					$res_gc_sold['qty'] = $res_gcsold['qty'];
@@ -1203,6 +409,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowsold')
 					$res_gc_sold['description'] = 'Item Sold';
 					//$res_gc_sold['current_bid'] = $resbid['bidamount'];
 					$res_gc_itemsold[] = $res_gc_sold;
+					
 					}
 				}
 				
@@ -1225,343 +432,63 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowsold')
 
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowunsold')
 {
-$area_title = 'Buynow Item Unsold';
-	if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'unsoldsearch')
-	{
+		$area_title = 'Buynow Item Unsold';
 		$scriptpage = HTTP_SERVER .'Sell/Buynowunsold'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false); 
 		$endDate = DATETODAY;
-		if($ilance->GPC['searchsell'] == 1)
-		{
-			 $value = DATEYESTERDAY;
-		}
-		else if($ilance->GPC['searchsell'] == 2)
-		{
-			 $value = SEVENDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 3)
-		{
-		 $value = THIRTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 4)
-		{
-		 $value = SIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 5)
-		{
-			 $value = NINETYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 6)
-		{
-			 $value = ONEEIGHTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 7)
-		{
-			 $value = THREESIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 8)
-		{
-			 $value = SEVENTWENTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 9)
-		{
-			 $value = THOUSANDEIGHTYDAYSAGO;
-		}
-		else
-		{
-			$value = '2011-01-01';
-		}
-	
-	   	$buynww= " SELECT * FROM " . DB_PREFIX . "projects 
-                WHERE  	user_id = '".$_SESSION['ilancedata']['user']['userid']."'
-				AND buynow_qty != '0'
-				AND (hasbuynowwinner = '1' OR hasbuynowwinner = '0')
-				AND		filtered_auctiontype = 'fixed'
-				AND status = 'expired'
-				AND   (date(date_end) <= '".$endDate."' AND date(date_end) >= '".$value."')
-				GROUP BY project_id  ";  
-	   	$sql_buynww1 = $ilance->db->query($buynww);
-		$number = $ilance->db->num_rows($sql_buynww1);	
-
-		$sql_buynww = $ilance->db->query($buynww.$sql_limit);
-
-		}
-		else
-		{
-		/*$sql_buynww= $ilance->db->query("
-                SELECT *
-                FROM " . DB_PREFIX . "buynow_orders 
-                WHERE  	owner_id = '".$_SESSION['ilancedata']['user']['userid']."'
-				GROUP BY project_id   
-                "); */
-			$scriptpage = HTTP_SERVER .'Sell/Buynowunsold?'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-			$buynww= " SELECT * FROM " . DB_PREFIX . "projects 
-                WHERE  	user_id = '".$_SESSION['ilancedata']['user']['userid']."'
-				AND buynow_qty != '0'
-				AND (hasbuynowwinner = '1' OR hasbuynowwinner = '0')
-				AND		filtered_auctiontype = 'fixed'
-				AND status = 'expired'
-				AND   (date(date_end) <= '".DATETODAY."' AND date(date_end) >= '".SEVENDAYSAGO."')	
-				GROUP BY project_id  "; 
-
-			$sql_buynww1 = $ilance->db->query($buynww);
-			$number = $ilance->db->num_rows($sql_buynww1);	
-
-			$sql_buynww = $ilance->db->query($buynww.$sql_limit);
+		$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+		$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
 		
-		}
-		if(isset($ilance->GPC['searchsell']))
-								{
-								  if($ilance->GPC['searchsell'] == 1)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1" selected="selected">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 2)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 3)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3" selected="selected">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 4)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" selected="selected">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 5)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" >Last 60 days</option>
-								<option value="5" selected="selected">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 6)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6" selected="selected">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 7)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7" selected="selected">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 8)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8" selected="selected">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 9)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9" selected="selected">Last 1080 days</option>
-								</select>';
-								  }
-								  else
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0"  selected="selected">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  
-								}
-								else
-								{
-								$drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								}
-	$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
-	$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);	
-			
-				if ($ilance->db->num_rows($sql_buynww) > 0)
+		$buynww="
+                SELECT p.project_id,p.project_title,p.buynow_price,p.buynow_qty,a.filehash,p.date_end
+                FROM " . DB_PREFIX . "projects p 
+                left join " . DB_PREFIX . "attachment a on a.project_id=p.project_id
+                WHERE p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
+				AND p.visible ='1'
+				AND p.project_state = 'product'
+				AND p.filtered_auctiontype = 'fixed'
+				AND p.status = 'expired'	
+				AND p.buynow_qty !='0'	
+				AND (date(p.date_end) <= '".DATETODAY."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."')	
+				GROUP BY p.project_id
+				ORDER BY p.id ASC ";
+                $sql_buynww1 = $ilance->db->query($buynww, 0, null, __FILE__, __LINE__);
+				$number = $ilance->db->num_rows($sql_buynww1);	
+				$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
+				$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);	
+		
+				$sql_gcsold = $ilance->db->query($buynww.$sql_limit, 0, null, __FILE__, __LINE__);
+				if($number>0)
 				{
-				while ($res_gcsoldw = $ilance->db->fetch_array($sql_buynww))
-					 {
-					
-					
-					$sql_gcsold = $ilance->db->query("
-                 SELECT *
-                FROM " . DB_PREFIX . "projects   
-                WHERE project_id = '".$res_gcsoldw['project_id']."' 	
-				AND user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND     visible ='1'
-				AND  	project_state = 'product'
-				AND		filtered_auctiontype = 'fixed'
-				AND    	status = 'expired'	
-				AND  buynow_qty !='0'	
-				GROUP BY project_id
-				ORDER BY id ASC
-                ");
-				
-				while ($res_gcsold = $ilance->db->fetch_array($sql_gcsold))
-					 {
-			
-					
-					$sql_atty = $ilance->db->query("
-                       SELECT * FROM
-                       " . DB_PREFIX . "attachment
-                       WHERE visible='1'
-                                               AND project_id = '".$res_gcsold['project_id']."'
-                                               AND attachtype='itemphoto'
-                                               
-                       ");
-                $fetch_new=$ilance->db->fetch_array($sql_atty);
-				
-				 
-					   if($ilance->db->num_rows($sql_atty) == 1)
-					   {
-							   $uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $fetch_new['filehash'] .'&w=170&h=105';
-							      //nov 28 for seo
-					 if ($ilconfig['globalauctionsettings_seourls'])
-					 {
-					   $item_path=HTTP_SERVER.'Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'';
-						$htm ='<a href="Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']).'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					 }
-	                     else
-					    $htm ='<a href="merch.php?id='.$res_gcsold['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-							   
-							  // $htm ='<a href="'. $ilpage['merch'] .'?id='.$res_gcsell['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					   }
-					   if($ilance->db->num_rows($sql_atty) == 0)
-			   
-					   {
-					   
-					  // fetch_auction('p',pid)
-						   $uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
-							   
-						   $htm ='<img src="' . $uselistr . '">';
-					   }
-					$res_gc_sold['item_path'] = $item_path;
-					$res_gc_sold['thumbnail'] = $htm;
-					$res_gc_sold['item_id'] = $res_gcsold['project_id'];
-				
-					$res_gc_sold['item_title'] = $res_gcsold['project_title'];
-					$res_gc_sold['minbid_buynow'] = $res_gcsold['buynow_price'];
-					//$res_gc_sold['bids'] = $res_gcsold['bids'];
-					$res_gc_sold['qty'] = $res_gcsold['buynow_qty'];
-					
-					$res_gc_sold['date_end'] =  date('m-d-Y',strtotime($res_gcsold['date_end']));
-									
-					$res_gc_sold['status'] = 'Ended';
-					//$res_gc_sold['current_bid'] = $resbid['bidamount'];
-					$res_gc_itemsold[] = $res_gc_sold;
-					}
+					while ($res_gcsold = $ilance->db->fetch_array($sql_gcsold))
+					{
+
+						$uselistr = (strlen($res_gcsold['filehash'])>0)?HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $res_gcsold['filehash'] .'&w=170&h=105':$ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
+						$url=$ilconfig['globalauctionsettings_seourls']?'Coin/'.$res_gcsold['project_id'].'/'.construct_seo_url_name($res_gcsold['project_title']):$ilpage['merch'] .'?id='.$res_gcsell['project_id'];
+						$htm ='<img src="' . $uselistr . '">';
+						$res_gc_sold['item_path'] = $url;
+						$res_gc_sold['thumbnail'] = $htm;
+						$res_gc_sold['item_id'] = $res_gcsold['project_id'];
+
+						$res_gc_sold['item_title'] = $res_gcsold['project_title'];
+						$res_gc_sold['minbid_buynow'] = $res_gcsold['buynow_price'];
+						//$res_gc_sold['bids'] = $res_gcsold['bids'];
+						$res_gc_sold['qty'] = $res_gcsold['buynow_qty'];
+
+						$res_gc_sold['date_end'] =  date('m-d-Y',strtotime($res_gcsold['date_end']));
+
+						$res_gc_sold['status'] = 'Ended';
+						//$res_gc_sold['current_bid'] = $resbid['bidamount'];
+						$res_gc_itemsold[] = $res_gc_sold;
 					}
 				}
-				
 				else
 				{				
 				$res_gc_itemsold['mm'] = 'Nofound';
 				}
-				$pprint_array = array('prevnext','drop_value','daylist','monthlist','yearlist','bidamount','project_title','buyingreminders','sellingreminders','scheduledcount','itemsworth','expertsrevenue','expertsearch','jobcount','expertcount','itemcount','feedbackactivity','messagesactivity','recentlyviewedflash','tagcloud','main_servicecats_img','main_productcats_img','main_servicecats','main_productcats','lanceads_folder','two_column_category_buyers','two_column_service_categories','two_column_product_categories','remote_addr','rid','default_exchange_rate','login_include','headinclude','onload','area_title','page_title','site_name','https_server','http_server','lanceads_header','lanceads_footer');
+					
+
+				
+	$pprint_array = array('prevnext','drop_value','daylist','monthlist','yearlist','bidamount','project_title','buyingreminders','sellingreminders','scheduledcount','itemsworth','expertsrevenue','expertsearch','jobcount','expertcount','itemcount','feedbackactivity','messagesactivity','recentlyviewedflash','tagcloud','main_servicecats_img','main_productcats_img','main_servicecats','main_productcats','lanceads_folder','two_column_category_buyers','two_column_service_categories','two_column_product_categories','remote_addr','rid','default_exchange_rate','login_include','headinclude','onload','area_title','page_title','site_name','https_server','http_server','lanceads_header','lanceads_footer');
 	$ilance->template->fetch('main', 'sell_buynowunsold.html');
 	$ilance->template->parse_hash('main', array('ilpage' => $ilpage));
 	$ilance->template->parse_loop('main', array('res_gc_itempending','res_gc_itemsold','res_gcselling','res_gcsolding','res_gc_returning'));
@@ -1575,52 +502,10 @@ $area_title = 'Buynow Item Unsold';
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'unsold')
 	{
 	$area_title = 'Item Unsold';
-    if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'unsoldsearch')
-	{
-		$scriptpage = HTTP_SERVER .'Sell/Unsold'. print_hidden_fields(true, array('do','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-		$endDate = DATETODAY;
-		if($ilance->GPC['searchsell'] == 1)
-		{
-			 $value = DATEYESTERDAY;
-		}
-		else if($ilance->GPC['searchsell'] == 2)
-		{
-			 $value = SEVENDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 3)
-		{
-		 $value = THIRTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 4)
-		{
-		 $value = SIXTYDAYSAGO;
-		} 
-		else if($ilance->GPC['searchsell'] == 5)
-		{
-			 $value = NINETYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 6)
-		{
-			 $value = ONEEIGHTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 7)
-		{
-			 $value = THREESIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 8)
-		{
-			 $value = SEVENTWENTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 9)
-		{
-			 $value = THOUSANDEIGHTYDAYSAGO;
-		}
-		else
-		{
-			$value = '2011-01-01';
-		}
-		//	((c.site_id=1 and c.sold_qty=0) or c.site_id=0) And  	
-				$gcunsold = " SELECT p.* FROM " . DB_PREFIX . "projects  p left join " . DB_PREFIX . "coins c  on c.coin_id=p.project_id
+	$scriptpage = HTTP_SERVER .'Sell/Unsold'. print_hidden_fields(true, array('do','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
+	$endDate = DATETODAY;
+	$sql_gcunsold1 = " SELECT p.*,a.filehash FROM " . DB_PREFIX . "projects  p 
+    			left join " . DB_PREFIX . "coins c on c.coin_id=p.project_id
                 WHERE  (c.site_id=0 or (c.site_id=1 and c.sold_qty=0)) and
 				p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
 				AND     p.visible ='1'
@@ -1629,209 +514,31 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'unsold')
 				AND  	p.project_state = 'product'
 				AND		p.filtered_auctiontype = 'regular'
 				AND    	p.status = 'expired'	
-				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$value."')
-				GROUP BY p.project_id	
-				ORDER BY p.id ASC  ";
-					
-				$sql_gcunsold1 = $ilance->db->query($gcunsold);
-				$number = $ilance->db->num_rows($sql_gcunsold1);	
-
-				$sql_gcunsold = $ilance->db->query($gcunsold.$sql_limit);	
-		}
-		else
-		{ 
-			//((c.site_id=1 and c.sold_qty=0) or c.site_id=0) And  	
-			$scriptpage = HTTP_SERVER .'Sell/Unsold?'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false); 
-		        $gcunsold = " SELECT p.* FROM " . DB_PREFIX . "projects p   left join " . DB_PREFIX . "coins c  on c.coin_id=p.project_id
-                WHERE  (c.site_id=0 or (c.site_id=1 and c.sold_qty=0)) and
-				p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
-				AND     p.visible ='1'
-				AND     p.haswinner = '0'
-				AND 	p.hasbuynowwinner != '1'
-				AND  	p.project_state = 'product'
-				AND		p.filtered_auctiontype = 'regular'
-				AND    	p.status = 'expired'	
-				AND   (date(p.date_end) <= '".DATETODAY."' AND date(p.date_end) >= '".SEVENDAYSAGO."')	
-				GROUP BY p.project_id		
+				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."')
 				ORDER BY p.id ASC ";
-
-                $sql_gcunsold1 = $ilance->db->query($gcunsold);
+				
+  	$gcunsold = " SELECT p.*,a.filehash FROM " . DB_PREFIX . "projects  p 
+    			left join " . DB_PREFIX . "attachment a on p.project_id=a.project_id and a.attachtype='itemphoto'
+    			left join " . DB_PREFIX . "coins c on c.coin_id=p.project_id
+                WHERE  (c.site_id=0 or (c.site_id=1 and c.sold_qty=0)) and
+				p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
+				AND     p.visible ='1'
+				AND     p.haswinner = '0'
+				AND 	p.hasbuynowwinner != '1'
+				AND  	p.project_state = 'product'
+				AND		p.filtered_auctiontype = 'regular'
+				AND    	p.status = 'expired'	
+				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."')	
+				ORDER BY p.id ASC ";
+					
+				$sql_gcunsold1 = $ilance->db->query($gcunsold, 0, null, __FILE__, __LINE__);
 				$number = $ilance->db->num_rows($sql_gcunsold1);	
 
-				$sql_gcunsold = $ilance->db->query($gcunsold.$sql_limit);
-					
-		}	
+				$sql_gcunsold = $ilance->db->query($gcunsold.$sql_limit, 0, null, __FILE__, __LINE__);	
+
+		$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+		$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
 		
-		if(isset($ilance->GPC['searchsell']))
-								{
-								  if($ilance->GPC['searchsell'] == 1)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1" selected="selected">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 2)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 3)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3" selected="selected">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 4)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" selected="selected">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 5)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" >Last 60 days</option>
-								<option value="5" selected="selected">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 6)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6" selected="selected">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-							  
-								  else if($ilance->GPC['searchsell'] == 7)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7" selected="selected">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 8)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8" selected="selected">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 9)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9" selected="selected">Last 1080 days</option>
-								</select>';
-								  }
-								  else
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0" selected="selected">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  
-								}
-								else
-								{
-								$drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								}
 
 		$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
 		$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);								
@@ -1842,40 +549,19 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'unsold')
 				while ($res_gcunsold = $ilance->db->fetch_array($sql_gcunsold))
 					{
 					
-					$sql_atty = $ilance->db->query("
-                       SELECT * FROM
-                       " . DB_PREFIX . "attachment
-                       WHERE visible='1'
-                                               AND project_id = '".$res_gcunsold['project_id']."'
-                                               AND attachtype='itemphoto'
-                                               
-                       ");
-                $fetch_new=$ilance->db->fetch_array($sql_atty);
-                               
-					   if($ilance->db->num_rows($sql_atty) == 1)
-					   {
-							   $uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $fetch_new['filehash'] .'&w=170&h=105';
-							   
-							      					   //nov 28 for seo
-					  if ($ilconfig['globalauctionsettings_seourls'])
-					  {
-						$item_path=HTTP_SERVER.'Coin/'.$res_gcunsold['project_id'].'/'.construct_seo_url_name($res_gcunsold['project_title']).'';
-						$htm ='<a href="Coin/'.$res_gcunsold['project_id'].'/'.construct_seo_url_name($res_gcunsold['project_title']).'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					  }
-	                     else
-					    $htm ='<a href="merch.php?id='.$res_gcunsold['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-							   
-							  // $htm ='<a href="'. $ilpage['merch'] .'?id='.$res_gcsell['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					   }
-					   if($ilance->db->num_rows($sql_atty) == 0)
-			   
-					   {
-						   $uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
-							   
-						   $htm ='<img src="' . $uselistr . '">';
-					   }
+					if ($ilconfig['globalauctionsettings_seourls'])
+						$url='Coin/'.$res_gcunsold['project_id'].'/'.construct_seo_url_name($res_gcunsold['project_title']);
+					else
+						$url='merch.php?id='.$res_gcunsold['project_id'];
+
+					if(strlen($res_gcunsold['filehash'])>0)
+						$uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $res_gcunsold['filehash'] .'&w=170&h=105';
+					else
+						$uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
 					
-					$res_gc_unsold['item_path'] = $item_path;
+					$htm ='<img src="' . $uselistr . '">';
+
+					$res_gc_unsold['item_path'] = $url;
 					$res_gc_unsold['thumbnail'] = $htm;
 					$res_gc_unsold['item_id'] = $res_gcunsold['project_id'];
 					$res_gc_unsold['item_title'] = $res_gcunsold['project_title'];
@@ -1912,46 +598,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 	if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'pendingsearch')
 	{
 	    $endDate = DATETODAY;
-		if($ilance->GPC['searchsell'] == 1)
-		{
-			 $value = DATEYESTERDAY;
-		}
-		else if($ilance->GPC['searchsell'] == 2)
-		{
-			 $value = SEVENDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 3)
-		{
-		 $value = THIRTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 4)
-		{
-		 $value = SIXTYDAYSAGO;
-		} 
-		else if($ilance->GPC['searchsell'] == 5)
-		{
-			 $value = NINETYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 6)
-		{
-			 $value = ONEEIGHTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 7)
-		{
-			 $value = THREESIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 8)
-		{
-			 $value = SEVENTWENTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 9)
-		{
-			 $value = THOUSANDEIGHTYDAYSAGO;
-		}
-		else
-		{
-			$value = '2011-01-01';
-		}
+		
 		
 			$gccoinpend = " SELECT p.* FROM " . DB_PREFIX . "projects   p left join " . DB_PREFIX . "coins c  on c.coin_id=p.project_id
                 WHERE  	p.user_id = '".$_SESSION['ilancedata']['user']['userid']."' 				
@@ -1960,216 +607,42 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 				AND		(p.hasbuynowwinner ='0' OR (p.hasbuynowwinner ='1' AND p.buynow_qty != '0'))
 				AND  	p.project_state = 'product'
 				AND    	p.status = 'expired'				
-				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$value."')						
+				AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."')						
 				group by p.id ";
 			
-			$sql_gccoinpend1 = $ilance->db->query($gccoinpend);
+			$sql_gccoinpend1 = $ilance->db->query($gccoinpend, 0, null, __FILE__, __LINE__);
 			$number = $ilance->db->num_rows($sql_gccoinpend1);	
 
-			$sql_gccoinpend = $ilance->db->query($gccoinpend.$sql_limit);	
+			$sql_gccoinpend = $ilance->db->query($gccoinpend.$sql_limit, 0, null, __FILE__, __LINE__);	
 			
 		}
 		else
 		{ 
-		$gcpend = " SELECT * FROM " . DB_PREFIX . "projects pj,
-				" . DB_PREFIX . "coins c ,
-				" . DB_PREFIX . "catalog_coin cc, 
-					" . DB_PREFIX . "catalog_second_level cs, 
-					" . DB_PREFIX . "catalog_toplevel cd
-                WHERE c.coin_id=pj.project_id
-				AND     (c.site_id=0 or (c.site_id=1 and c.sold_qty=0)) 
+		$gcpend = " SELECT pj.project_id,pj.project_title,pj.currentprice,pj.buynow_qty,pj.buynow_price,pj.status,pj.date_end,pj.startprice,pj.bids,a.filehash FROM " . DB_PREFIX . "projects pj
+				left join " . DB_PREFIX . "coins c  on pj.project_id=c.coin_id
+				left join " . DB_PREFIX . "catalog_second_level cs on cs.coin_series_unique_no=pj.coin_series_unique_no
+				left join " . DB_PREFIX . "catalog_toplevel cd on cd.denomination_unique_no=pj.coin_series_denomination_no 
+				left join " . DB_PREFIX . "attachment a on a.project_id=pj.project_id AND a.attachtype='itemphoto'
+                WHERE (c.site_id=0 or (c.site_id=1 and c.sold_qty=0)) 
 				AND     pj.user_id = '".$_SESSION['ilancedata']['user']['userid']."'				
 				AND     pj.visible ='1'
 				AND     pj.haswinner = '0'
 				AND		(pj.hasbuynowwinner ='0' OR (pj.hasbuynowwinner ='1' AND pj.buynow_qty != '0'))
 				AND  	pj.project_state = 'product'
 				AND     pj.status = 'expired'
-				AND pj.cid=cc.PCGS 
-				AND	cc.coin_series_unique_no=cs.coin_series_unique_no
-				AND	cc.coin_series_denomination_no=cd.denomination_unique_no
 				AND c.project_id != 0
-				group by pj.project_id
-				ORDER BY cd.denomination_sort,
-				cs.coin_series_sort,
-				cc.coin_detail_year ";
+				ORDER BY cd.denomination_sort, cs.coin_series_sort, pj.coin_detail_year ";
 
-			$sql_gcpend1 = $ilance->db->query($gcpend);
+			$sql_gcpend1 = $ilance->db->query($gcpend, 0, null, __FILE__, __LINE__);
 			$number1 = $ilance->db->num_rows($sql_gcpend1);	
 
 			$sql_limit = 'LIMIT ' . (($ilance->GPC['pages'] - 1) * $ilconfig['globalfilters_maxrowsdisplaysubscribers']) . ',' . $ilconfig['globalfilters_maxrowsdisplaysubscribers'];
-			$sql_gcpend = $ilance->db->query($gcpend.$sql_limit);
+			$sql_gcpend = $ilance->db->query($gcpend.$sql_limit, 0, null, __FILE__, __LINE__);
 		
 		}	
-		if(isset($ilance->GPC['searchsell']))
-								{
-								  if($ilance->GPC['searchsell'] == 1)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1" selected="selected">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 2)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 3)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3" selected="selected">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 4)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" selected="selected">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 5)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" >Last 60 days</option>
-								<option value="5" selected="selected">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 6)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6" selected="selected">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-
-								  else if($ilance->GPC['searchsell'] == 7)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  	 
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7" selected="selected">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 8)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  	 
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8" selected="selected">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 9)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>  	 
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9" selected="selected">Last 1080 days</option>
-								</select>';
-								  }
-								  else
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0"  selected="selected">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  
-								}
-								else
-								{
-								$drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								}
+		$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+		$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
+		
 		
 		$counter1 = (intval($ilance->GPC['pages']) - 1) * fetch_perpage();
 		$prevnext1 = print_pagnation($number1, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['pages']), $counter1, $scriptpage, 'pages');	
@@ -2181,65 +654,32 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 				//status
 				while ($res_gcpendding = $ilance->db->fetch_array($sql_gcpend))
 					{
-					$coin_detail_query=$ilance->db->query("select coin_id from ".DB_PREFIX."coins where coin_id='".$res_gcpendding['project_id']."'");
-					if($ilance->db->num_rows($coin_detail_query)>0)
-					{
-					
-					$sql_atty = $ilance->db->query("
-                       SELECT * FROM
-                       " . DB_PREFIX . "attachment
-                       WHERE visible='1'
-                                               AND project_id = '".$res_gcpendding['project_id']."'
-											   AND attachtype='itemphoto'
-                                               
-                                               
-                       ");
-                $fetch_new=$ilance->db->fetch_array($sql_atty);
-                               
-					   if($ilance->db->num_rows($sql_atty) >= 1)
-					   {
-							   $uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $fetch_new['filehash'] .'&w=170&h=105';
-							   
-							   			   //nov 28 for seo
-					 if ($ilconfig['globalauctionsettings_seourls'])
-					{
-					$item_path=HTTP_SERVER.'Coin/'.$res_gcpendding['project_id'].'/'.construct_seo_url_name($res_gcpendding['project_title']).'';
-						$htm ='<img  class="img_libox" src="'.$uselistr.'" style="padding: 10px; border-width:0px; cursor:pointer;">';
-					}
-	                     else
-					    $htm ='<img  class="img_libox" src="'.$uselistr.'" style="padding: 10px; border-width:0px; cursor:pointer;">';
-							 
-							 //$htm ='<a href="'. $ilpage['merch'] .'?id='.$res_gcsell['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					   }
-					   if($ilance->db->num_rows($sql_atty) == 0)
-			   
-					   {
-						   $uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
-							   
-						   $htm ='<img src="' . $uselistr . '">';
-					   }
-					   
-					   // murugan on mar 11
-					   
-					$res_gc_pend['minbid'] = $res_gcpendding['startprice'];
-					$res_gc_pend['buynow'] = $res_gcpendding['buynow_price'];
-					$res_gc_pend['item_path'] = $item_path;
-					
-					$res_gc_pend['thumbnail'] = $htm;
-					$res_gc_pend['item_id'] = $res_gcpendding['project_id'];
-					$res_gc_pend['item_title'] = $res_gcpendding['project_title'];					
-					$res_gc_pend['bids'] = $res_gcpendding['bids'];
-					$res_gc_pend['timelef'] = date('m-d-Y',strtotime($res_gcpendding['date_end']));
-					$res_gc_pend['buynow_qty'] = $res_gcpendding['buynow_qty'];
-					$resgcsold['status'] = $res_gcpendding['status'];
-					$resgcsold['status'] = 'Pending';
-					$res_gc_pend['status'] = $resgcsold['status'];
-					
-					$res_gc_pend['current_bid'] = $res_gcpendding['currentprice'];
-					$res_gc_itempending[] = $res_gc_pend;
-					
-					
-					}
+					 
+						if ($ilconfig['globalauctionsettings_seourls'])
+							$item_path=HTTP_SERVER.'Coin/'.$res_gcpendding['project_id'].'/'.construct_seo_url_name($res_gcpendding['project_title']).'';
+						else
+							$item_path=$ilpage['merch'] .'?id='.$res_gcsell['project_id'];
+						if(strlen($res_gcpendding['filehash'])>0)
+							$uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $res_gcpendding['filehash'] .'&w=170&h=105';
+						else
+							$uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
+
+						$res_gc_pend['minbid'] = $res_gcpendding['startprice'];
+						$res_gc_pend['buynow'] = $res_gcpendding['buynow_price'];
+						$res_gc_pend['item_path'] = $item_path;
+						
+						$res_gc_pend['thumbnail'] = '<img src="' . $uselistr . '">';
+						$res_gc_pend['item_id'] = $res_gcpendding['project_id'];
+						$res_gc_pend['item_title'] = $res_gcpendding['project_title'];					
+						$res_gc_pend['bids'] = $res_gcpendding['bids'];
+						$res_gc_pend['timelef'] = date('m-d-Y',strtotime($res_gcpendding['date_end']));
+						$res_gc_pend['buynow_qty'] = $res_gcpendding['buynow_qty'];
+						$resgcsold['status'] = $res_gcpendding['status'];
+						$resgcsold['status'] = 'Pending';
+						$res_gc_pend['status'] = $resgcsold['status'];
+						
+						$res_gc_pend['current_bid'] = $res_gcpendding['currentprice'];
+						$res_gc_itempending[] = $res_gc_pend;
 					}
 				
 				
@@ -2251,25 +691,22 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 				}				
 				//coin table			
 					
-				$gccoinpend = " SELECT * FROM  " . DB_PREFIX . "coins co,
-					" . DB_PREFIX . "catalog_coin cc, 
-					" . DB_PREFIX . "catalog_second_level cs, 
-					" . DB_PREFIX . "catalog_toplevel cd 
+				$gccoinpend = " SELECT co.coin_id,co.Title,co.Minimum_bid,DATE_FORMAT(co.End_Date, '%m-%d-%Y') as End_Date,co.status,a.filehash FROM  
+				" . DB_PREFIX . "coins co
+				left join " . DB_PREFIX . "attachment a on co.coin_id=a.project_id
+				left join " . DB_PREFIX . "catalog_coin cc on co.pcgs=cc.PCGS 
+				left join " . DB_PREFIX . "catalog_second_level cs on cc.coin_series_unique_no=cs.coin_series_unique_no
+				left join " . DB_PREFIX . "catalog_toplevel cd on cc.coin_series_denomination_no=cd.denomination_unique_no
 				WHERE  	 co.user_id = '".$_SESSION['ilancedata']['user']['userid']."'
-				AND		co.project_id='0'		 
-				AND 	co.status = '0'							
-				AND co.pcgs=cc.PCGS 
-					AND	cc.coin_series_unique_no=cs.coin_series_unique_no
-					AND	cc.coin_series_denomination_no=cd.denomination_unique_no
-					GROUP BY co.coin_id
-					ORDER BY  cc.Orderno ,(CASE WHEN (co.pcgs = '6000120' OR co.pcgs = '6000127' OR co.pcgs = '6000128' OR co.pcgs = '6000129') THEN co.title END) ASC,co.grade DESC
+				AND		co.project_id='0' AND 	co.status = '0'	 
+				ORDER BY  cc.Orderno ,(CASE WHEN (co.pcgs = '6000120' OR co.pcgs = '6000127' OR co.pcgs = '6000128' OR co.pcgs = '6000129') THEN co.title END) ASC,co.grade DESC
 				";
 
-			$sql_gccoinpend1 = $ilance->db->query($gccoinpend);
+			$sql_gccoinpend1 = $ilance->db->query($gccoinpend, 0, null, __FILE__, __LINE__);
 			$number = $ilance->db->num_rows($sql_gccoinpend1);	
 
 			$sql_limit1 = 'LIMIT ' . (($ilance->GPC['page'] - 1) * $ilconfig['globalfilters_maxrowsdisplaysubscribers']) . ',' . $ilconfig['globalfilters_maxrowsdisplaysubscribers'];
-			$sql_gccoinpend = $ilance->db->query($gccoinpend.$sql_limit1);
+			$sql_gccoinpend = $ilance->db->query($gccoinpend.$sql_limit1, 0, null, __FILE__, __LINE__);
 			$scriptpage1 = HTTP_SERVER .'Sell/Pending'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
 			$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
 			$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage1);	
@@ -2279,40 +716,12 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 				while ($res_gccoin_pendding = $ilance->db->fetch_array($sql_gccoinpend))
 					{
 					
-					$sql_atty = $ilance->db->query("
-                       SELECT * FROM
-                       " . DB_PREFIX . "attachment
-                       WHERE visible='1'
-                                               AND project_id = '".$res_gccoin_pendding['coin_id']."'
-											    AND attachtype='itemphoto'
-                                               
-                                               
-                       ");
-                $fetch_new=$ilance->db->fetch_array($sql_atty);
-                               
-					   if($ilance->db->num_rows($sql_atty) >= 1)
-					   {
-							   $uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $fetch_new['filehash'] .'&w=170&h=105';
-							   
-							   			   //nov 28 for seo
-					 if ($ilconfig['globalauctionsettings_seourls'])
+					if(strlen($res_gccoin_pendding['filehash']))
+						$uselistr = HTTPS_SERVER . 'image.php?cmd=thumb&subcmd=itemphoto&id=' . $res_gccoin_pendding['filehash'] .'&w=170&h=105';
+					else
+						$uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
 
-						//$htm ='<a href="Coin/'.$res_gccoin_pendding['project_id'].'/'.construct_seo_url_name($res_gccoin_pendding['project_title']).'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-						$htm ='<img class="img_liboxpend" src="'.$uselistr.'" style="padding: 10px; border-width:0px; cursor:pointer;">';
-	                     else
-					    //$htm ='<a href="merch.php?id='.$res_gccoin_pendding['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-						$htm ='<img class="img_liboxpend" src="'.$uselistr.'" style="padding: 10px; border-width:0px; cursor:pointer;">';
-							 
-							 //$htm ='<a href="'. $ilpage['merch'] .'?id='.$res_gcsell['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-					   }
-					   if($ilance->db->num_rows($sql_atty) == 0)
-			   
-					   {
-						   $uselistr = $ilconfig['template_relativeimagepath'] . $ilconfig['template_imagesfolder'] . 'nophoto.gif';
-							   
-						   $htm ='<img src="' . $uselistr . '">';
-					   }
-					//###coin_id, user_id, pcgs, Title, Description, Grading_Service, Grade, Quantity, Max_Quantity_Purchase, Certification_No, Condition_Attribute, Cac, Star, Plus, Coin_Series, Pedigee, Site_Id, Minimum_bid, Reserve_Price, Buy_it_now, End_Date, Alternate_inventory_No, Category, Other_information, consignid, coin_listed, in_notes, Service_Level, final_fee_percentage, final_fee_min, listing_fee, referal_id, notes, project_id, status, export, Sets, nocoin, pending###//
+					$htm ='<img class="img_liboxpend" src="'.$uselistr.'" style="padding: 10px; border-width:0px; cursor:pointer;">';
 					$res_gc_coin_pend['thumbnail'] = $htm;
 					$res_gc_coin_pend['item_id'] = $res_gccoin_pendding['coin_id'];
 					$res_gc_coin_pend['item_title'] = $res_gccoin_pendding['Title'];
@@ -2324,7 +733,6 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 					$resgcsold['status'] = 'Pending';
 					$res_gc_coin_pend['status'] = $resgcsold['status'];
 					
-					$res_gc_coin_pend['current_bid'] = $res_gccoin_pendding['currentprice'];
 					$res_gc_coin_pending[] = $res_gc_coin_pend;
 					}
 				}
@@ -2358,250 +766,26 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'returned')
 {
 	$area_title = 'Items Returned';
 	
-	if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'returnedsearch')
-	{
-		$scriptpage = HTTP_SERVER .'Sell/Returned'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);   
-		$endDate = DATETODAY;
-		if($ilance->GPC['searchsell'] == 1)
-		{
-			 $value = DATEYESTERDAY;
-		}
-		else if($ilance->GPC['searchsell'] == 2)
-		{
-			 $value = SEVENDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 3)
-		{
-		 $value = THIRTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 4)
-		{
-		 $value = SIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 5)
-		{
-			 $value = NINETYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 6)
-		{
-			 $value = ONEEIGHTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 7)
-		{
-			 $value = THREESIXTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 8)
-		{
-			 $value = SEVENTWENTYDAYSAGO;
-		}
-		else if($ilance->GPC['searchsell'] == 9)
-		{
-			 $value = THOUSANDEIGHTYDAYSAGO;
-		}
-		else
-		{
-			$value = '2011-01-01';
-		}
+	$scriptpage = HTTP_SERVER .'Sell/Returned'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);   
+	$endDate = DATETODAY;
+	 
+
+   	$gcsell = " SELECT ct.coin_id,ct.Title,ct.Minimum_bid,ct.Buy_it_now,cr.return_date
+			 FROM  " . DB_PREFIX . "coins_retruned ct,
+			 " . DB_PREFIX . "coin_return cr
+			 WHERE cr.user_id = '".$_SESSION['ilancedata']['user']['userid']."'
+			 AND cr.coin_id = ct.coin_id
+			 AND   (date(cr.return_date) <= '".$endDate."' AND date(cr.return_date) >= '".$date_filter_values[$ilance->GPC['searchsell']]."')
+			 ORDER BY cr.return_date ASC ";
+	$sql_gcsell1 = $ilance->db->query($gcsell, 0, null, __FILE__, __LINE__);
+	$number = $ilance->db->num_rows($sql_gcsell1);	
+
+	$sql_gcsell = $ilance->db->query($gcsell.$sql_limit, 0, null, __FILE__, __LINE__);
 	
-	   	$gcsell = " SELECT ct.coin_id,ct.Title,ct.Minimum_bid,ct.Buy_it_now,cr.return_date
-				 FROM  " . DB_PREFIX . "coins_retruned ct,
-				 " . DB_PREFIX . "coin_return cr
-				 WHERE cr.user_id = '".$_SESSION['ilancedata']['user']['userid']."'
-				 AND cr.coin_id = ct.coin_id
-				 AND   (date(cr.return_date) <= '".$endDate."' AND date(cr.return_date) >= '".$value."')
-				 ORDER BY cr.return_date ASC ";
-	   		$sql_gcsell1 = $ilance->db->query($gcsell);
-			$number = $ilance->db->num_rows($sql_gcsell1);	
+	$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
 
-			$sql_gcsell = $ilance->db->query($gcsell.$sql_limit);
-		}
-		else  
-		{
-			$scriptpage = HTTP_SERVER .'Sell/Returned?'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
-			$gcsell = " SELECT ct.coin_id,ct.Title,ct.Minimum_bid,ct.Buy_it_now,cr.return_date
-				 FROM  " . DB_PREFIX . "coins_retruned ct,
-				 " . DB_PREFIX . "coin_return cr
-				 WHERE cr.user_id = '".$_SESSION['ilancedata']['user']['userid']."'
-				 AND (date(cr.return_date) <= '".$endDate."' AND date(cr.return_date) >= '".SEVENDAYSAGO."') 
-				 AND cr.coin_id = ct.coin_id
-				 ORDER BY cr.return_date ASC ";
-
-			$sql_gcsell1 = $ilance->db->query($gcsell);
-			$number = $ilance->db->num_rows($sql_gcsell1);	
-
-			$sql_gcsell = $ilance->db->query($gcsell.$sql_limit);
-		}
-	
-	if(isset($ilance->GPC['searchsell']))
-	{
-								 if($ilance->GPC['searchsell'] == 1)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1" selected="selected">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 2)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 3)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3" selected="selected">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 4)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" selected="selected">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 5)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4" >Last 60 days</option>
-								<option value="5" selected="selected">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 6)
-								  {
-								  $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6" selected="selected">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-
-								  else if($ilance->GPC['searchsell'] == 7)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7" selected="selected">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 8)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8" selected="selected">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  else if($ilance->GPC['searchsell'] == 9)
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9" selected="selected">Last 1080 days</option>
-								</select>';
-								  }
-								  else
-								  {
-								  	 $drop_value='<select name="searchsell">
-								<option value="0" selected="selected">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								  }
-								  
-								}
-								else
-								{
-								$drop_value='<select name="searchsell">
-								<option value="0">-------All-------</option>
-								<option value="1">Last 24 Hours</option>
-								<option value="2" selected="selected">Last 7 days</option>
-								<option value="3">Last 30 days</option>
-								<option value="4">Last 60 days</option>
-								<option value="5">Last 90 days</option>
-								<option value="6">Last 180 days</option>
-								<option value="7">Last 360 days</option>
-								<option value="8">Last 720 days</option>
-								<option value="9">Last 1080 days</option>
-								</select>';
-								}
+	$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
+		
 	$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
 	$prevnext = print_pagnation($number, $ilconfig['globalfilters_maxrowsdisplaysubscribers'], intval($ilance->GPC['page']), $counter, $scriptpage);	
 									
@@ -2667,6 +851,29 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'returned')
 	exit();
  }
 
+ function form_days_drop_down($select_name="searchsell",$selected_val=0)
+ {
+ 	$days_drop_down_list["0"]="-------All-------";
+ 	$days_drop_down_list["1"]="Last 24 Hours";
+ 	$days_drop_down_list["2"]="Last 7 days";
+ 	$days_drop_down_list["3"]="Last 30 days";
+ 	$days_drop_down_list["4"]="Last 60 days";
+ 	$days_drop_down_list["5"]="Last 90 days";
+ 	$days_drop_down_list["6"]="Last 180 days";
+ 	$days_drop_down_list["7"]="Last 360 days";
+ 	$days_drop_down_list["8"]="Last 720 days";
+ 	$days_drop_down_list["9"]="Last 1080 days";
+ 	$drop_value='<select name="'.$select_name.'">';
+ 	foreach ($days_drop_down_list as $day_option_id=>$day_option_value)
+ 	{
+ 		if(($selected_val==$day_option_id))
+ 			$drop_value.='<option value="'.$day_option_id.'"  selected="selected">'.$day_option_value.'</option>';
+ 		else
+ 			$drop_value.='<option value="'.$day_option_id.'">'.$day_option_value.'</option>';
+ 	}
+ 	$drop_value.='</select>';
+ 	return $drop_value;
+ }
 /*======================================================================*\
 || ####################################################################
 || # Downloaded: Wed, Jun 2nd, 2010

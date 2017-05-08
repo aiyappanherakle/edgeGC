@@ -55,7 +55,7 @@ add_patch_sql("ALTER TABLE `".DB_PREFIX."users` CHANGE `referal_id` `referal_id`
 add_patch_sql("ALTER TABLE `".DB_PREFIX."users` CHANGE `access_bb` `access_bb` INT( 1 ) NULL DEFAULT NULL , CHANGE `enable_batch_bid` `enable_batch_bid` INT( 1 ) NULL DEFAULT NULL , CHANGE `is_auto_lower_min_bid` `is_auto_lower_min_bid` BINARY( 1 ) NULL DEFAULT NULL ,CHANGE `auto_min_bid_lower_prec` `auto_min_bid_lower_prec` INT( 2 ) NULL DEFAULT NULL ;");
 add_patch_sql("ALTER TABLE `".DB_PREFIX."invoices` CHANGE `combine_project` `combine_project` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
 add_patch_sql("ALTER TABLE `".DB_PREFIX."projects` ADD INDEX `archive_coins` (`project_id`, `haswinner`, `status`, `coin_series_denomination_no`) USING BTREE");
-
+add_patch_sql("ALTER TABLE `".DB_PREFIX."project_bids` ADD INDEX (`user_id`, `project_id`)");
 
 
 

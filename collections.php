@@ -1419,9 +1419,10 @@ if (!empty($ilance->GPC['mode']) AND $show['searcherror'] == 0)
 						{
 						 // #### build sql query ################################
 						foreach($project_like_keyword as $piece)
-                        {
-                            $sqlquery['projecttitle_like'].= "AND p.project_title LIKE '%".$piece."%' ";
-                        }
+						{
+						   	// $sqlquery['projecttitle_like'].= "AND p.project_title LIKE '%".$piece."%' ";
+							$sqlquery['projecttitle_like'].= 'AND MATCH (p.project_title) AGAINST ("+' . $ilance->db->escape_string($piece) . '" IN BOOLEAN MODE)';
+						}
 						}//Bug ID 4070 start
                           $SQL  = "$sqlquery[select] $sqlquery[timestamp] $sqlquery[projectstatus] $sqlquery[keywords] $sqlquery[categories] $sqlquery[projectdetails] $sqlquery[projectstate] $sqlquery[projecttitle_like] $sqlquery[grading_service] $sqlquery[year_range] $sqlquery[grade_range] $sqlquery[bid_range] $sqlquery[listing_type] $sqlquery[denomination] $sqlquery[options] $sqlquery[pricerange] $sqlquery[location] $sqlquery[userquery] $sqlquery[hidequery] $sqlquery[genrequery] $sqlquery[orderby] $sqlquery[limit]";
 

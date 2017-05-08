@@ -295,7 +295,7 @@ if (!(defined('SKIP_SESSION'))) {
 	'" . $user_id . "','" . IPADDRESS . "','" . DATETIME24H . "','" . $ilance->db->escape_string($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']) . "',
 	'" . $ilance->db->escape_string($browser_details['userAgent']) . "',
 	'" . $ilance->db->escape_string($browser_details['browsername']) . "',
-	'" . $ilance->db->escape_string($browser_details['version']) . "',
+	'" . substr($ilance->db->escape_string($browser_details['version']),0,10) . "',
 	'" . $ilance->db->escape_string($browser_details['platform']) . "',
 	'" . $ilance->db->escape_string($_SESSION['referrer1']) . "',
 	'" . $is_bot . "')";

@@ -1784,6 +1784,16 @@ $new_list[] = array( 'url'=>'/^([Pp]+)([Aa]+)([Tt]+)([Ee]+)([Rr]+)([Ss]+)([Oo]+)
 		'sort'=>'01',
 		'series'=>'0',
 	) );
+// Auction Archive 2017
+$new_list[] = array( 'url'=>'#^Auction-Archive(/(US-Coins))?(/([0-9]+)/[^/]+)?(/([0-9]+)/[^/]+)?(/([0-9]+)/[^/]+)?/?$#i',
+	'file'=>'auction_archive.php',
+	'line'=>__LINE__,
+	'parameters'=>array(
+		'universe'=>'$2',
+		'denomination'=>'$4',
+		'coin_series'=>'$6',
+		'coin'=>'$8',
+	));
 // echo '<pre>'; print_r( $new_list); echo '</pre>'; exit;
 
 if (($pos = strpos($uri, '?')) !== False)		// if there are CGI style parameters in the URL
@@ -1799,10 +1809,11 @@ foreach ($new_list as $path)	// for each remapping possibility
 {
 	if ( preg_match( $path['url'], $uri, $r, PREG_OFFSET_CAPTURE, 0 ) )		// if there's a match
 	{
+		// echo $path['url']; exit;
 		foreach ($path['parameters'] as $key=>$get )						// get the parameters
 		{
 			if(!is_array($get))
-				$_GET[$key]=( strpos( $get, '$' )!==false )?$r[substr( $get, strpos( $get, '$' )+1 )][0]:$get;
+				$_GET[$key]=( strpos( $get, '$' )!==false )?@$r[substr( $get, strpos( $get, '$' )+1 )][0]:$get;		// McB 2017-04-04: added "@" so no warning if parameter not provided
 			else
 				$_GET[$key]=$get;
 					// perform substition and assign to $_GET to be fed into included iLance PHP script
@@ -1812,7 +1823,7 @@ foreach ($new_list as $path)	// for each remapping possibility
 		unset($_GET['%{QUERY_STRING}']);		// McB removed, probable unimplemented Suku CGI parameter logic
 
 		$_GET = array_merge($_GET, $CGIparams);	// add any CGI params that were already in the URL
-		//echo '<pre>'; print_r($_GET); echo '</pre>'; echo $path['file']; echo $path['line'];exit;
+		// echo '<pre>'; print_r($_GET); echo '</pre>'; echo $path['file']; echo $path['line'];exit;
 
 		require $path['file'];
 		exit;	// we're done, since the included script does everything

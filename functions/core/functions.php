@@ -225,7 +225,8 @@ function random_auction($row=0)
 					$sep = '<td></td>';
 			
 				
-				 $yutq = $ilance->auction->auction_timeleft($row_pre_fea['project_id'], $ilance->styles->fetch_css_element('panelbackground', $property = 'background', $csstype = 'csscommon'), 'right', $timeintext = 0, $showlivebids = 0, 0);
+				 //$yutq = $ilance->auction->auction_timeleft($row_pre_fea['project_id'], $ilance->styles->fetch_css_element('panelbackground', $property = 'background', $csstype = 'csscommon'), 'right', $timeintext = 0, $showlivebids = 0, 0);
+				$yutq = auction_time_left_new($row_pre_fea,true);
 				 $myfeature.= '<div id="abox01" style="height: 310px;">
 						
 						<div id="fetit">';
