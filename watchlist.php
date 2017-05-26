@@ -670,13 +670,13 @@ function update_watchlist(type, watchlistid)
 				$enablebatchbidding ='1';
 
 				}
-			$active = $ilance->db->query("SELECT  pr.maxamount,w.comment,p.project_details,p.filtered_auctiontype,p.user_id as project_user_id ,p.buynow_qty,p.buynow_price,p.max_qty,p.currencyid,p.bids,p.project_state,p.description,p.status,p.currencyid,p.startprice,p.currentprice,b.bid_id,w.watching_project_id,p.project_id,p.project_title,UNIX_TIMESTAMP(p.date_end) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS mytime, UNIX_TIMESTAMP(p.date_starts) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS starttime,ca.filename as filehash,(SELECT COUNT(attachid) AS picture_count FROM " . DB_PREFIX . "attachment  WHERE project_id=p.project_id) as picture_count,
+			$active = $ilance->db->query("SELECT  pr.maxamount,w.comment,p.project_details,p.filtered_auctiontype,p.user_id as project_user_id ,p.buynow_qty,p.buynow_price,p.max_qty,p.currencyid,p.bids,p.project_state,p.description,p.status,p.currencyid,p.startprice,p.currentprice,w.watching_project_id,p.project_id,p.project_title,UNIX_TIMESTAMP(p.date_end) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS mytime, UNIX_TIMESTAMP(p.date_starts) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS starttime,ca.filename as filehash,(SELECT COUNT(attachid) AS picture_count FROM " . DB_PREFIX . "attachment  WHERE project_id=p.project_id) as picture_count,
 												  (select user_id from  " . DB_PREFIX . "project_bids where p.project_id = project_id  order by bidamount desc,date_added asc limit 1) as winning_user_id,
-												  ifnull((SELECT bidamount FROM " . DB_PREFIX . "project_bids WHERE project_id = p.project_id ORDER BY bidamount DESC, date_added ASC LIMIT 1),1 ) as bid_amount,
+												  ifnull((SELECT bidamount FROM " . DB_PREFIX . "project_bids WHERE project_id = p.project_id ORDER BY bidamount DESC, date_added ASC LIMIT 1),1 ) as bid_amount,(select bid_id from  " . DB_PREFIX . "project_bids where p.project_id = project_id and user_id = '" . $_SESSION['ilancedata']['user']['userid'] . "' order by bidamount desc,date_added asc limit 1) as bid_id,
+												  (select bid_id from  " . DB_PREFIX . "project_bids where p.project_id = project_id and user_id = '" . $_SESSION['ilancedata']['user']['userid'] . "' order by bidamount desc,date_added asc limit 1) as bid_id,
 												  (SELECT amount FROM " . DB_PREFIX . "increments  WHERE ((increment_from <= bid_amount AND increment_to >= bid_amount) OR (increment_from < bid_amount AND increment_to < bid_amount)) AND groupname = 'default' ORDER BY amount DESC limit 1) as increment
 						                          FROM " . DB_PREFIX . "watchlist w
 												  left join " . DB_PREFIX . "projects p on w.watching_project_id=p.project_id
-												  left join " . DB_PREFIX . "project_bids b on b.project_id = p.project_id and b.user_id=w.user_id
 												  left join " . DB_PREFIX . "proxybid pr on pr.user_id = '" . $_SESSION['ilancedata']['user']['userid'] . "' and pr.project_id = w.watching_project_id
 												  left join  " . DB_PREFIX . "attachment ca on ca.project_id=p.project_id and ca.attachtype='itemphoto'
 						                          WHERE p.status = 'open' and w.user_id='" . $_SESSION['ilancedata']['user']['userid'] . "'
@@ -986,11 +986,11 @@ function update_watchlist(type, watchlistid)
 				$ended_counter = (intval($ilance->GPC['page']) - 1) * $ilconfig['globalfilters_maxrowsdisplay'];
 
 				$ended_row_count = 0;
-				$ended = $ilance->db->query("SELECT pr.maxamount,w.comment,p.project_details,p.filtered_auctiontype,p.bids,p.project_state,p.description,p.status,p.currencyid,p.startprice,p.currentprice,b.bid_id,w.watching_project_id,p.project_id,p.project_title,p.date_end as ended_on,UNIX_TIMESTAMP(p.date_end) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS mytime, UNIX_TIMESTAMP(p.date_starts) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS starttime ,(SELECT COUNT(attachid) AS picture_count FROM " . DB_PREFIX . "attachment  WHERE project_id=p.project_id) as picture_count,ca.filename as filehash
-											, (select user_id from  " . DB_PREFIX . "project_bids where p.project_id = project_id  order by bidamount desc,date_added asc limit 1) as winning_user_id
+				$ended = $ilance->db->query("SELECT pr.maxamount,w.comment,p.project_details,p.filtered_auctiontype,p.bids,p.project_state,p.description,p.status,p.currencyid,p.startprice,p.currentprice,w.watching_project_id,p.project_id,p.project_title,p.date_end as ended_on,UNIX_TIMESTAMP(p.date_end) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS mytime, UNIX_TIMESTAMP(p.date_starts) - UNIX_TIMESTAMP('" . DATETIME24H . "') AS starttime ,(SELECT COUNT(attachid) AS picture_count FROM " . DB_PREFIX . "attachment  WHERE project_id=p.project_id) as picture_count,ca.filename as filehash,
+											(select bid_id from  " . DB_PREFIX . "project_bids where p.project_id = project_id and user_id = '" . $_SESSION['ilancedata']['user']['userid'] . "' order by bidamount desc,date_added asc limit 1) as bid_id,
+											(select user_id from  " . DB_PREFIX . "project_bids where p.project_id = project_id  order by bidamount desc,date_added asc limit 1) as winning_user_id
 											FROM " . DB_PREFIX . "watchlist w
 											left join  " . DB_PREFIX . "projects p on w.watching_project_id=p.project_id
-											left join " . DB_PREFIX . "project_bids b on b.project_id = p.project_id and b.user_id=w.user_id
 											left join " . DB_PREFIX . "proxybid pr on pr.user_id = '" . $_SESSION['ilancedata']['user']['userid'] . "' and pr.project_id = w.watching_project_id
 											left join  " . DB_PREFIX . "attachment ca on ca.project_id=p.project_id and ca.attachtype='itemphoto'
 											WHERE p.status = 'expired' and w.user_id='" . $_SESSION['ilancedata']['user']['userid'] . "'

@@ -1,0 +1,90 @@
+SELECT name, value FROM ilance_configuration /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.ilance.inc.php
+Line number : 754
+Time taken : 0.002 Seconds 
+
+SELECT name, value FROM ilance_payment_configuration /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.ilance.inc.php
+Line number : 850
+Time taken : 0.001 Seconds 
+
+SELECT groupname FROM ilance_payment_groups WHERE moduletype = 'gateway' /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.ilance.inc.php
+Line number : 865
+Time taken : 0 Seconds 
+
+SELECT name, value FROM ilance_payment_configuration WHERE configgroup = 'authnet' /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.ilance.inc.php
+Line number : 888
+Time taken : 0 Seconds 
+
+SELECT configtable, version FROM ilance_modules_group WHERE modulegroup = 'lancekb' LIMIT 1 /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.lancekb.inc.php
+Line number : 40
+Time taken : 0 Seconds 
+
+SELECT name, value FROM ilance_kb_configuration /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.lancekb.inc.php
+Line number : 49
+Time taken : 0 Seconds 
+
+SELECT value FROM ilance_sessions WHERE sesskey = 'pcpae6td8q9mkdloildfg4lfk4' AND expiry > 1493255758 /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.sessions.inc.php
+Line number : 191
+Time taken : 0 Seconds 
+
+SELECT name, content, type FROM ilance_templates WHERE styleid = '2' ORDER BY sort ASC /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.styles.inc.php
+Line number : 61
+Time taken : 0.005 Seconds 
+
+SELECT subject,postsid FROM ilance_kbposts WHERE catid=18 AND approved=1 ORDER BY postsid DESC limit 10 /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+
+Line number : 
+Time taken : 0.001 Seconds 
+
+insert into ilance_user_activity (user_id,ipaddress,occurrence,url,userAgent, browsername, version, platform, referer, is_bot) values ( '0','::1','2017-04-27 03:15:58','localhost/gc/preProduction/CoinPrices/4/Small-Cents?log', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/602.4.8 (KHTML, like Gecko) Version/10.0.3 Safari/602.4.8', '', '10.0.3', 'mac', 'http://localhost/gc/preProduction/CoinPrices?log', '') /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/global.php
+Line number : 304
+Time taken : 0.002 Seconds 
+
+select * from ilance_catalog_toplevel where id='4' order by denomination_sort /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.categories_parser.inc.php
+Line number : 1130
+Time taken : 0.001 Seconds 
+
+select s.coin_series_unique_no,s.coin_series_name, COUNT( p.project_id ) AS sold_count from ilance_catalog_second_level s left join ilance_projects p on p.coin_series_unique_no=s.coin_series_unique_no AND (p.haswinner = '1' OR p.hasbuynowwinner = '1') where s.coin_series_denomination_no='4' group by s.coin_series_unique_no order by s.coin_series_sort /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.categories_parser.inc.php
+Line number : 927
+Time taken : 1.15 Seconds 
+
+select * from ilance_catalog_second_level where coin_series_denomination_no='4' order by coin_series_sort /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.categories_parser.inc.php
+Line number : 1158
+Time taken : 0.001 Seconds 
+
+select c.buynow_price,c.bids,c.buyer_fee, c.haswinner,c.date_end,c.project_title,c.currentprice,c.project_id,c.buynow,c.description, a.filename,a.filehash, (select count(attachid) from ilance_attachment where project_id=c.project_id) as picture_count, (select maxamount from ilance_proxybid WHERE project_id = c.project_id AND user_id = '0' LIMIT 1) as maxamount, (select user_id from ilance_project_bids where project_id=c.project_id order by bidamount desc,date_added asc limit 1) as winning_user_id from ilance_projects c left join ilance_attachment a on a.project_id=c.project_id and a.attachtype='itemphoto' where c.status = 'expired' AND c.visible = '1' AND c.coin_series_denomination_no='4' AND (c.haswinner = '1' OR c.hasbuynowwinner = '1') AND c.cid !='0' ORDER BY c.haswinner DESC,c.date_end DESC LIMIT 0,50 /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/denomination.php
+Line number : 2452
+Time taken : 0.847 Seconds 
+
+select c.date_end,c.project_title,c.currentprice,c.project_id,c.buynow,c.description from ilance_projects c where c.status = 'expired' AND c.visible = '1' AND c.coin_series_denomination_no='4' AND (c.haswinner = '1' OR c.hasbuynowwinner = '1') AND c.cid !='0' ORDER BY c.haswinner DESC,c.date_end DESC /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/denomination.php
+Line number : 2464
+Time taken : 1.408 Seconds 
+
+SELECT COUNT( * ) as total_ended FROM ilance_projects WHERE status = 'expired' OR status = 'closed' /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/denomination.php
+Line number : 2585
+Time taken : 0.172 Seconds 
+
+select url_title,url_description,url_keyword from ilance_seo where page='gc/preProduction/CoinPrices/4/Small-Cents?log' or seo_url='http://localhost/gc/preProduction/gc/preProduction/CoinPrices/4/Small-Cents?log' or seo_url='http://localhost/gc/preProduction/gc/preProduction/CoinPrices/4/Small-Cents?log' limit 1 /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/api/class.template.inc.php
+Line number : 1176
+Time taken : 0.001 Seconds 
+
+SELECT token FROM ilance_sessions GROUP BY token /*/gc/preProduction/CoinPrices/4/Small-Cents?log*/
+/Applications/XAMPP/xamppfiles/htdocs/gc/preProduction/functions/core/functions.php
+Line number : 6939
+Time taken : 0 Seconds 
+

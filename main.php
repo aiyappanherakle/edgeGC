@@ -1094,6 +1094,7 @@ else
 		$ilance->cache = new ilance_memcached();
         $botblurb_title = $ilance->cache->fetch('_email_generator_bottomtitle');
         $botblurb_desc = preg_replace("#<a #i",'<a style="color: blue;" ',$ilance->cache->fetch('_email_generator_bottombody'));
+		$botblurb_desc = preg_replace("#target=\"_blank\"#i",'',$botblurb_desc);	// all links should be local
         	
         $pprint_array = array('botblurb_title','botblurb_desc','myfeature','mydaily','myfeat','service_cat','product_cat','buyingreminders','sellingreminders','scheduledcount','itemsworth','jobcount','itemcount','recentlyviewedflash','tagcloud','remote_addr','rid','login_include','headinclude','onload','area_title','page_title','site_name','https_server','http_server');
         ($apihook = $ilance->api('main_start')) ? eval($apihook) : false;  

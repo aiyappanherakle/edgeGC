@@ -37,9 +37,9 @@ $new_list[] = array( 'url'=>'/^kb\/discuss-article-t([0-9]+)-([0-9]+)\.html$/', 
 $new_list[] = array( 'url'=>'/^kb\/print-article-t([0-9]+)\.html$/',  'file'=>'./kb/printarticle.php', 'line'=>__LINE__, 'parameters'=>array('id'=>'$1') ); 
 $new_list[] = array( 'url'=>'/^kb\/save-article-t([0-9]+)-([0-9]+)\.html$/',  'file'=>'./kb/index.php',   'line'=>__LINE__, 'parameters'=>array('cmd'=>'$2','id'=>'$1') );
 $new_list[] = array( 'url'=>'/^kb\/search-([0-9]+)\.html$/',  'file'=>'./kb/index.php', 'line'=>__LINE__, 'parameters'=>array('cmd'=>'$1') );
-$new_list[] = array( 'url'=>'/^kb\/top-10-viewed\.html$/',    'file'=>'./kb/index.php',    'line'=>__LINE__, 'parameters'=>array('cmd'=>'1','pop'=>'1') );
-$new_list[] = array( 'url'=>'/^kb\/top-10-emailed\.html$/',   'file'=>'./kb/index.php',    'line'=>__LINE__, 'parameters'=>array('cmd'=>'1','pop'=>'2') );
-$new_list[] = array( 'url'=>'/^kb\/top-10-printed\.html$/',   'file'=>'./kb/index.php',    'line'=>__LINE__, 'parameters'=>array('cmd'=>'1','pop'=>'4') );
+$new_list[] = array( 'url'=>'/^kb\/top-10-viewed\.html$/',    'file'=>'./kb/index.php',    'line'=>__LINE__, 'parameters'=>array('cmd'=>'3','pop'=>'1') );
+$new_list[] = array( 'url'=>'/^kb\/top-10-emailed\.html$/',   'file'=>'./kb/index.php',    'line'=>__LINE__, 'parameters'=>array('cmd'=>'3','pop'=>'2') );
+$new_list[] = array( 'url'=>'/^kb\/top-10-printed\.html$/',   'file'=>'./kb/index.php',    'line'=>__LINE__, 'parameters'=>array('cmd'=>'3','pop'=>'4') );
 
 $new_list[] = array( 'url'=>'/^image\/([0-9]+)\/([0-9]+)/',
 	'file'=>'/image/image.php',
@@ -1785,7 +1785,7 @@ $new_list[] = array( 'url'=>'/^([Pp]+)([Aa]+)([Tt]+)([Ee]+)([Rr]+)([Ss]+)([Oo]+)
 		'series'=>'0',
 	) );
 // Auction Archive 2017
-$new_list[] = array( 'url'=>'#^Auction-Archive(/(US-Coins))?(/([0-9]+)/[^/]+)?(/([0-9]+)/[^/]+)?(/([0-9]+)/[^/]+)?/?$#i',
+$new_list[] = array( 'url'=>'#^Auction-Archive(/(US-Coin-Prices))?(/([0-9]+)/[^/]+)?(/([0-9]+)/[^/]+)?(/([0-9]+)/[^/]+)?/?$#i',
 	'file'=>'auction_archive.php',
 	'line'=>__LINE__,
 	'parameters'=>array(

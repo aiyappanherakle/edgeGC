@@ -69,7 +69,7 @@ if (!empty($ilance->GPC['crypted']))
 	$date_filter_values['7'] = THREESIXTYDAYSAGO;
 	$date_filter_values['8'] = SEVENTWENTYDAYSAGO;
 	$date_filter_values['9'] = THOUSANDEIGHTYDAYSAGO;
-error_reporting(E_ALL);
+
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'current')
 	{
 		$table_header_images['ASC']="images/default/expand_collapsed.gif";
@@ -89,8 +89,8 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'current')
 	$order_list['22']="ORDER BY p.project_title DESC";
 	$order_list['31']="ORDER BY p.bids ASC";
 	$order_list['32']="ORDER BY p.bids DESC";
-	$order_list['41']="ORDER BY p.price ASC";
-	$order_list['42']="ORDER BY p.price DESC";
+	$order_list['41']="ORDER BY price ASC";
+	$order_list['42']="ORDER BY price DESC";
 	$order_list['51']="ORDER BY p.currentprice ASC";
 	$order_list['52']="ORDER BY p.currentprice DESC";
 	$order_list['61']="ORDER BY p.date_end ASC";
@@ -184,7 +184,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'current')
 					   {
 					    $mess = '<font color="blue"> Listed for<br>Buy Now </font>';
 					   }
-					    $res_gc_sell['timelef']=auction_time_left_new($res_gcsell,true);
+					    $res_gc_sell['timelef']=auction_time_left_new($res_gcsell,false);
 						$views_trackers  = $res_gcsell['views'].' / '.($res_gcsell['users_tracked']+$res_gcsell['watchlist_count']);
 					   
 					  // End here murugan
@@ -222,7 +222,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'current')
 				//// items sold
 if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'sold')
 	{
-		error_reporting(E_ALL);
+		
 		$area_title = 'Sold Items';
 		$scriptpage = HTTP_SERVER .'Sell/Sold'. print_hidden_fields(true, array('do','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
 		$endDate = DATETODAY;
@@ -243,7 +243,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'sold')
  				a.filehash,a.filename,b.bidamount FROM " . DB_PREFIX . "projects p
  				left join " . DB_PREFIX . "attachment a on a.project_id=p.project_id and a.attachtype='itemphoto'
  				left join " . DB_PREFIX . "project_bids b on b.project_id=p.project_id and b.bidstatus = 'awarded'
- 				left join " . DB_PREFIX . "invoices i on i.projectid=p.project_id and i.p2b_user_id='".$_SESSION['ilancedata']['user']['userid']."'
+ 				left join " . DB_PREFIX . "invoices i on i.projectid=p.project_id and i.p2b_user_id='".$_SESSION['ilancedata']['user']['userid']."' and i.isbuyerfee=0
                 WHERE  	p.user_id = '".$_SESSION['ilancedata']['user']['userid']."'   
 				AND     p.visible ='1'
 				AND  	p.project_state = 'product'
@@ -334,7 +334,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowsold')
 	$area_title = 'Buynow Item Sold';
 	$scriptpage = HTTP_SERVER .'Sell/Buynowsold'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);      
 	$endDate = DATETODAY;
-	
+	$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:2;
 		$buynw= " SELECT p.project_id,p.project_title,p.date_end,p.status,a.filehash,i.invoiceid,i.duedate,i.paiddate,i.createdate,i.amount,p.bids
 		,o.orderdate,o.qty FROM " . DB_PREFIX . "buynow_orders o
 				left join " . DB_PREFIX . "projects p on p.project_id=o.project_id
@@ -343,8 +343,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowsold')
                 WHERE  p.project_id>0 and	o.owner_id = '".$_SESSION['ilancedata']['user']['userid']."'   
 				AND   (date(o.orderdate) <= '".$endDate."' 
 				AND date(o.orderdate) >= '".$date_filter_values[$ilance->GPC['searchsell']]."') 
-				group by o.project_id order by p.project_id desc
-				 ";  
+				order by o.orderid asc ";  
 	   		
 	   		$sql_buynw1 = $ilance->db->query($buynw, 0, null, __FILE__, __LINE__);
 			$number = $ilance->db->num_rows($sql_buynw1);	
@@ -352,7 +351,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowsold')
 			$sql_buynw = $ilance->db->query($buynw.$sql_limit, 0, null, __FILE__, __LINE__);
 
 
-			$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+			
 			$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
 			
 			$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
@@ -435,7 +434,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowunsold')
 		$area_title = 'Buynow Item Unsold';
 		$scriptpage = HTTP_SERVER .'Sell/Buynowunsold'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false); 
 		$endDate = DATETODAY;
-		$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+		$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:2;
 		$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
 		
 		$buynww="
@@ -450,7 +449,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'buynowunsold')
 				AND p.buynow_qty !='0'	
 				AND (date(p.date_end) <= '".DATETODAY."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchsell']]."')	
 				GROUP BY p.project_id
-				ORDER BY p.id ASC ";
+				ORDER BY p.project_id ASC ";
                 $sql_buynww1 = $ilance->db->query($buynww, 0, null, __FILE__, __LINE__);
 				$number = $ilance->db->num_rows($sql_buynww1);	
 				$counter = (intval($ilance->GPC['page']) - 1) * fetch_perpage();
@@ -504,6 +503,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'unsold')
 	$area_title = 'Item Unsold';
 	$scriptpage = HTTP_SERVER .'Sell/Unsold'. print_hidden_fields(true, array('do','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
 	$endDate = DATETODAY;
+	$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:2;
 	$sql_gcunsold1 = " SELECT p.*,a.filehash FROM " . DB_PREFIX . "projects  p 
     			left join " . DB_PREFIX . "coins c on c.coin_id=p.project_id
                 WHERE  (c.site_id=0 or (c.site_id=1 and c.sold_qty=0)) and
@@ -586,7 +586,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'unsold')
 	$ilance->template->pprint('main', $pprint_array);
 	exit();	
 	}
-	//error_reporting(E_ALL);
+	
 				//item unsold end
 				//#####################################
 				//item pennding
@@ -595,6 +595,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 	$ilance->GPC['pages'] = (!isset($ilance->GPC['pages']) OR isset($ilance->GPC['pages']) AND $ilance->GPC['pages'] <= 0) ? 1 : intval($ilance->GPC['pages']);				
 	$area_title = 'Item Pending';
 	$scriptpage = HTTP_SERVER .'Sell/Pending'. print_hidden_fields(true, array('do','cmd','pages','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);
+	$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:2;
 	if(isset($ilance->GPC['subcmd']) AND $ilance->GPC['subcmd'] == 'pendingsearch')
 	{
 	    $endDate = DATETODAY;
@@ -693,7 +694,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'pending')
 					
 				$gccoinpend = " SELECT co.coin_id,co.Title,co.Minimum_bid,DATE_FORMAT(co.End_Date, '%m-%d-%Y') as End_Date,co.status,a.filehash FROM  
 				" . DB_PREFIX . "coins co
-				left join " . DB_PREFIX . "attachment a on co.coin_id=a.project_id
+				left join " . DB_PREFIX . "attachment a on co.coin_id=a.project_id AND a.attachtype='itemphoto'
 				left join " . DB_PREFIX . "catalog_coin cc on co.pcgs=cc.PCGS 
 				left join " . DB_PREFIX . "catalog_second_level cs on cc.coin_series_unique_no=cs.coin_series_unique_no
 				left join " . DB_PREFIX . "catalog_toplevel cd on cc.coin_series_denomination_no=cd.denomination_unique_no
@@ -768,7 +769,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'returned')
 	
 	$scriptpage = HTTP_SERVER .'Sell/Returned'. print_hidden_fields(true, array('do','cmd','page','budget','searchid','list'), true, '', '', $htmlentities = true, $urldecode = false);   
 	$endDate = DATETODAY;
-	 
+	$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:2;
 
    	$gcsell = " SELECT ct.coin_id,ct.Title,ct.Minimum_bid,ct.Buy_it_now,cr.return_date
 			 FROM  " . DB_PREFIX . "coins_retruned ct,
@@ -782,7 +783,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'returned')
 
 	$sql_gcsell = $ilance->db->query($gcsell.$sql_limit, 0, null, __FILE__, __LINE__);
 	
-	$ilance->GPC['searchsell']=isset($ilance->GPC['searchsell'])?$ilance->GPC['searchsell']:0;
+	
 
 	$drop_value=form_days_drop_down("searchsell",$ilance->GPC['searchsell']);
 		

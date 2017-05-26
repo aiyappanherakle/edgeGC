@@ -5,7 +5,7 @@
 || # -------------------------------------------------------------------- # ||
 || # Customer License # LuLTJTmo23V1ZvFIM-KH-jOYZjfUFODRG-mPkV-iVWhuOn-b=L
 || # -------------------------------------------------------------------- # ||
-|| # Copyright ©2000–2010 ILance Inc. All Rights Reserved.                # ||
+|| # Copyright Â©2000â€“2010 ILance Inc. All Rights Reserved.                # ||
 || # This file may not be redistributed in whole or significant part.     # ||
 || # ----------------- ILANCE IS NOT FREE SOFTWARE ---------------------- # ||
 || # http://www.ilance.com | http://www.ilance.com/eula	| info@ilance.com # ||
@@ -153,7 +153,7 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'active')
 					$res_gc_active['timeleft'] = $res_gcact['date_starts'];
 					$res_gc_active['current_bid'] = $res_gcact['current_bid'];
 					//karthik
-					$res_gc_active['timelef'] = auction_time_left_new($res_gcact,true);
+					$res_gc_active['timelef'] = auction_time_left_new($res_gcact,false);
 						// end
 					if($res_gcact['proposal'] !='')
 					{
@@ -187,13 +187,12 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'won')
 	$scriptpage = HTTP_SERVER . 'Buy/Won'. print_hidden_fields(true, array('page', 'budget'), true, '', '', $htmlentities = true, $urldecode = false);   	
 	$endDate = DATETODAY;
 	$ilance->GPC['searchbuy'] =isset($ilance->GPC['searchbuy'])?intval($ilance->GPC['searchbuy']):2;
-	error_reporting(E_ALL);
 	$gcwon = " SELECT p.project_id,p.date_end,b.bidamount,p.bids,p.project_title,i.status as invoice_status,i.invoiceid,i.paiddate,
 			(SELECT filename FROM " . DB_PREFIX . "attachment WHERE visible='1' AND project_id = p.project_id AND attachtype='itemphoto' limit 1) as filename
 			FROM " . DB_PREFIX . "projects p 
 			left join " . DB_PREFIX . "project_bids b on p.project_id = b.project_id
-			left join " . DB_PREFIX . "invoices i on i.projectid =  p.project_id AND i.user_id ='".$_SESSION['ilancedata']['user']['userid']."' and i.isbuyerfee=0
-            WHERE  	p.winner_user_id = '".$_SESSION['ilancedata']['user']['userid']."' 
+			left join (SELECT * from " . DB_PREFIX . "invoices where user_id ='".$_SESSION['ilancedata']['user']['userid']."' and isbuyerfee=0  and status!='cancelled'  group by projectid) i  on p.project_id=i.projectid
+			WHERE  	p.winner_user_id = '".$_SESSION['ilancedata']['user']['userid']."' 
 			AND		b.bidstatus = 'awarded'
 			AND    	p.haswinner = '1'
 			AND   (date(p.date_end) <= '".$endDate."' AND date(p.date_end) >= '".$date_filter_values[$ilance->GPC['searchbuy']]."')
@@ -221,31 +220,38 @@ if(isset($ilance->GPC['cmd']) AND $ilance->GPC['cmd'] == 'won')
 			 	$htm ='<a href="Coin/'.$res_gcwon['project_id'].'/'.construct_seo_url_name($res_gcwon['project_title']).'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
             else
 		    	$htm ='<a href="merch.php?id='.$res_gcwon['project_id'].'"><img  src="'.$uselistr.'" style="padding: 10px; border-width:0px;"></a>';
-
-			$sql_com = $ilance->db->query("SELECT status,paiddate FROM " . DB_PREFIX . "invoices
+		    if($res_gcwon['invoiceid']>0)
+		    {
+		    $sql_com = $ilance->db->query("SELECT status,paiddate FROM " . DB_PREFIX . "invoices
 	                                               WHERE combine_project LIKE '%".$res_gcwon['invoiceid']."%'
 	                                               AND user_id ='".$_SESSION['ilancedata']['user']['userid']."'" , 0, null, __FILE__, __LINE__);
 						
-			if($ilance->db->num_rows($sql_com)>0)
-			{
-				$fetch_com=$ilance->db->fetch_array($sql_com);
-				//
-				if($fetch_com['status'] == 'paid')
-			   {
-				 $res_gc_won['invoice'] = 'Paid-'.$fetch_com['paiddate'];
-			   }
-			   else if($fetch_com['status'] == 'unpaid')
-			   {
-				 $res_gc_won['invoice'] = '<a href="'. HTTPS_SERVER .'buyer_invoice.php'. '">Click to Pay</a>';
-			   } 
-			   else if($fetch_com['status'] == 'scheduled')
-			   {
-				 $res_gc_won['invoice'] = 'Payment Pending';
-			   }
-			   else
-			   {
-				$res_gc_won['invoice'] = $fetch_com['status'];
-			   }
+				if($ilance->db->num_rows($sql_com)>0)
+				{
+					$fetch_com=$ilance->db->fetch_array($sql_com);
+					//
+					if($fetch_com['status'] == 'paid')
+				   {
+					 $res_gc_won['invoice'] = 'Paid-'.$fetch_com['paiddate'];
+				   }
+				   else if($fetch_com['status'] == 'unpaid')
+				   {
+					 $res_gc_won['invoice'] = '<a href="'. HTTPS_SERVER .'buyer_invoice.php'. '">Click to Pay</a>';
+				   } 
+				   else if($fetch_com['status'] == 'scheduled')
+				   {
+					 $res_gc_won['invoice'] = 'Payment Pending';
+				   }
+				   else
+				   {
+					$res_gc_won['invoice'] = $fetch_com['status'];
+				   }
+				}else{
+					$res_gc_won['invoice'] = '<a href="'. HTTPS_SERVER .'buyer_invoice.php'. '">Click to Pay</a>';	
+				}	
+		    }
+			else{
+			 	$res_gc_won['invoice'] = '<a href="'. HTTPS_SERVER .'buyer_invoice.php'. '">Click to Pay</a>';
 			 }
 			
 

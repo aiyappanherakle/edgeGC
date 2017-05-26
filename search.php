@@ -196,7 +196,6 @@ if (!empty($ilance->GPC['mode']) AND $show['searcherror'] == 0) {
 
 	}
 	//for Bug #3379	end
-
 	//for Bug #3380	start
 	if (isset($ilance->GPC['denomination']) && is_array($ilance->GPC['denomination']) && count($ilance->GPC['denomination']) > 0) {
 
@@ -208,6 +207,13 @@ if (!empty($ilance->GPC['mode']) AND $show['searcherror'] == 0) {
 						</div></div>';
 			}
 		}
+	}elseif(isset($ilance->GPC['denomination']) && intval($ilance->GPC['denomination']) > 0){
+		$denomina_dets = $ilance->categories_parser->fetch_denominations(intval($ilance->GPC['denomination']));
+			if (!empty($denomina_dets)) {
+				$is_denom_page = '<div style="padding:9px" class="block-content-yellow">
+						<div class="smaller"><strong>' . $denomina_dets['denomination_long'] . '</strong> information:&nbsp;' . $denomina_dets['denomination_description'] . '
+						</div></div>';
+			}
 	}
 	//for Bug #3380	end
 
@@ -1183,15 +1189,15 @@ if (!empty($ilance->GPC['mode']) AND $show['searcherror'] == 0) {
 								$sqlquery['denomination'] = '';
 							}
 							if (empty($ilance->GPC['denom_all']) && !empty($ilance->GPC['denomination'])) {
-
 								$gpc_denomination_arr = $ilance->GPC['denomination'];
-								for ($i = 0; $i < count($gpc_denomination_arr); $i++) {
-									$gpc_denomination_arr_1[] = "'" . $gpc_denomination_arr[$i] . "'";
+								if(is_array(($gpc_denomination_arr)))
+								{
+									$sqlquery['denomination'] = " AND (p.coin_series_denomination_no IN(" . implode(",",array_map("intval",$gpc_denomination_arr)) . ")) ";	
+								}else
+								{
+									$gpc_denomination_arr_1=intval($ilance->GPC['denomination']);
+									$sqlquery['denomination'] = " AND p.coin_series_denomination_no=".$gpc_denomination_arr_1." ";	
 								}
-
-								$gpc_denomination_arr_1 = implode(",", $gpc_denomination_arr_1);
-
-								$sqlquery['denomination'] = " AND (p.coin_series_denomination_no IN(" . $gpc_denomination_arr_1 . ")) ";
 							}
 						} else {
 							$sqlquery['denomination'] = '';

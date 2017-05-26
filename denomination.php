@@ -111,6 +111,8 @@ if ( isset( $ilance->GPC['cmd'] ) and $ilance->GPC['cmd'] == 'listings' ) {
 
 
 					$l++;
+					if(isset($ilance->GPC['date_end']) and $ilance->GPC['date_end']==$row['date'])
+					$current_auction_count=$row['cnt'];
 	}
 
 	//Featured
@@ -122,7 +124,7 @@ if ( isset( $ilance->GPC['cmd'] ) and $ilance->GPC['cmd'] == 'listings' ) {
 
 		$tab_name_date = $ilance->GPC['date_end'];
 
-		$text="Bid Now through ".date( 'l, F j, Y', strtotime( $tab_name_date ) )." (".$num['cnt']." Coin Auctions)";
+		$text="Bid Now through ".date( 'l, F j, Y', strtotime( $tab_name_date ) )." (".$current_auction_count." Coin Auctions)";
 
 		$categoryresults=$ilance->categories_parser->html_denomination_new( $tab_name_date );
 
